@@ -1,0 +1,99 @@
+<div class="history-page">
+  <div class="container">
+    
+    <!-- HEADER -->
+    <div class="page-header">
+      <h2>Lịch sử giao dịch</h2>
+      <p>Xem lại các giao dịch đã thực hiện</p>
+    </div>
+
+    <!-- TỔNG QUAN -->
+    <div class="history-summary">
+      <div class="summary-card">
+        <h3>Số dư USD</h3>
+        <div class="summary-value">${{balance}}</div>
+      </div>
+
+      <div class="summary-card">
+        <h3>Tài sản đang nắm giữ</h3>
+        <div class="holdings-list">
+          {{#if holdings}}
+            {{#each holdings}}
+              <div class="holding-item">
+                <span class="holding-symbol">{{symbol}}</span>
+                <span class="holding-amount">{{amount}}</span>
+                <small class="holding-price">Giá TB: ${{avg_price}}</small>
+              </div>
+            {{/each}}
+          {{else}}
+            <p class="no-data">Chưa có tài sản nào</p>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+
+    <!-- LỊCH SỬ GIAO DỊCH -->
+    <div class="history-filters">
+      <h3>Lịch sử giao dịch</h3>
+      <div class="filter-buttons">
+        <button class="history-filter-btn active" data-filter="all">Tất cả</button>
+        <button class="history-filter-btn" data-filter="buy">Mua</button>
+        <button class="history-filter-btn" data-filter="sell">Bán</button>
+      </div>
+    </div>
+
+    <div class="history-table-wrapper">
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th>Coin</th>
+            <th>Số lượng</th>
+            <th>Giá</th>
+            <th>Tổng giá trị</th>
+          </tr>
+        </thead>
+        <tbody id="historyTableBody">
+          {{#if transactions}}
+            {{#each transactions}}
+              <tr data-type="{{type}}">
+                <td>
+                  <div class="history-datetime">{{datetime}}</div>
+                  <small class="history-time">{{time}}</small>
+                </td>
+                <td>
+                  {{#if isBuy}}
+                    <span class="history-type-buy">Mua</span>
+                  {{else}}
+                    <span class="history-type-sell">Bán</span>
+                  {{/if}}
+                </td>
+                <td>
+                  <div class="crypto-name">
+                    <div class="crypto-icon">{{symbol}}</div>
+                    <span>{{symbol}}</span>
+                  </div>
+                </td>
+                <td>{{amount}}</td>
+                <td>${{price}}</td>
+                <td><strong>${{total}}</strong></td>
+              </tr>
+            {{/each}}
+          {{else}}
+            <tr>
+              <td colspan="6" style="text-align: center; padding: 2rem;">
+                Chưa có giao dịch nào
+              </td>
+            </tr>
+          {{/if}}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+{{#section "script"}}
+  <script src="/js/mainweb.js"></script>
+  <script src="/js/history.js"></script>
+{{/section}}

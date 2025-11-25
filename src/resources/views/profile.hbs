@@ -1,0 +1,36 @@
+<div class="page-header">
+  <h2>Trang Cá Nhân</h2>
+  <p>Thông tin tài khoản của bạn</p>
+</div>
+
+<div class="container">
+  <div class="auth-box">
+    <h3>Thông tin</h3>
+    <p><strong>Họ tên:</strong> {{user.fullname}}</p>
+    <p><strong>Tài khoản:</strong> {{user.email}}</p>
+    
+    <p><strong>Số dư USD:</strong> ${{balanceUsd}}</p>
+      {{#if holdings}}
+        {{#each holdings}}
+          <p>{{symbol}}: {{amount}}</p>
+        {{/each}}
+      {{else}}
+        <p>Không còn coin nào!</p>
+      {{/if}}
+    <h3>Coin đang sở hữu</h3>
+    <ul>
+      {{#if holdings}}
+        {{#each holdings}}
+          <li>{{symbol}}: {{amount}}</li>
+        {{/each}}
+      {{else}}
+        <li>Chưa có coin nào!</li>
+      {{/if}}
+    </ul>
+  </div>
+
+  <div style="margin-top:1.5rem;">
+    <a href="/login/logout" class="login-btn">Đăng xuất</a>
+  </div>
+</div>
+

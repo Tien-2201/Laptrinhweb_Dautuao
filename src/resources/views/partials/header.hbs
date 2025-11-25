@@ -1,0 +1,22 @@
+<div class="header">
+    <div class="header-container">
+        <a href="home" class="logo">
+            <img src="/img/logo.jpg" alt="Ảnh logo">
+            <div class="logo-text">TQ</div>
+        </a>
+        <nav>
+            <a href="/market">Thị trường</a>
+            <a href="/portfolio">Danh mục đầu tư</a>
+            <a href="/trading">Giao dịch</a>
+            <a href="/history">Lịch sử</a>
+            {{#if user}}
+              <a href="/profile">Xin chào, {{user.fullname}}</a>
+              <a href="/login/logout" class="header-btn-dn">Đăng xuất</a>
+            {{else}}
+              <a href="/login" class="header-btn-dn">Đăng nhập</a>
+            {{/if}}
+        </nav>
+        <div class="mobile-menu"><i class="fa-solid fa-bars"></i></div>
+    </div>
+    <div></div>
+</div>

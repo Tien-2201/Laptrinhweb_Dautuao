@@ -1,0 +1,69 @@
+<div class="auth-box">
+    {{#if error}}
+    <div class="form-error" style="background:#ffe6e6;color:#990000;padding:10px;border-radius:6px;margin-bottom:12px;text-align:center;">
+        {{error}}
+    </div>
+    {{/if}}
+    <!-- Form Đăng Nhập -->
+    <div class="form-container active" id="loginForm">
+        <h2>Đăng Nhập</h2>
+        <form action="/login" method="POST">
+            <div class="form-group">
+                <label>Tài khoản</label>
+                <input type="text" name="email" placeholder="Nhập tài khoản" required>
+            </div>
+
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" name="password" placeholder="Nhập mật khẩu" required>
+            </div>
+
+            <button type="submit" class="login-btn">Đăng Nhập</button>
+        </form>
+
+        <div class="switch-form">
+            Chưa có tài khoản? <a href="#" onclick="switchForm('register')">Đăng ký</a>
+        </div>
+    </div>
+
+    <!-- Form Đăng Ký -->
+    <div class="form-container" id="registerForm">
+        <h2>Đăng Ký</h2>
+        <form action="/login/register" method="POST">
+            <div class="form-group">
+                <label>Họ tên</label>
+                <input type="text" name="fullname" placeholder="Nhập họ tên" required>
+            </div>
+
+            <div class="form-group">
+                <label>Tài khoản</label>
+                <input type="text" name="email" placeholder="Nhập tài khoản" required>
+            </div>
+
+            <div class="form-group">
+                <label>Mật khẩu</label>
+                <input type="password" name="password" id="password" placeholder="Nhập mật khẩu" required>
+            </div>
+
+            <div class="form-group">
+                <label>Xác nhận mật khẩu</label>
+                <input type="password" name="confirmPassword" id="confirmPassword" placeholder="Nhập lại mật khẩu" required>
+            </div>
+
+            <button type="submit" class="login-btn">Đăng Ký</button>
+        </form>
+
+        <div class="switch-form">
+            Đã có tài khoản? <a href="#" onclick="switchForm('login')">Đăng nhập</a>
+        </div>
+    </div>
+</div>
+
+{{#section "script"}}
+    <script src="/js/login.js"></script>
+    {{#if error}}
+        <script>
+            alert("{{error}}");
+        </script>
+    {{/if}}
+{{/section}}

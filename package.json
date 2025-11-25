@@ -1,0 +1,40 @@
+{
+  "name": "baitaplon",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [
+    "baitaplon"
+  ],
+  "homepage": "https://github.com/Tien-2201/nodejs_project#readme",
+  "bugs": {
+    "url": "https://github.com/Tien-2201/nodejs_project/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Tien-2201/nodejs_project.git"
+  },
+  "license": "ISC",
+  "author": "mtt",
+  "type": "commonjs",
+  "main": "src/index.js",
+  "scripts": {
+    "start": "nodemon --inspect src/index.js",
+    "watch": "sass --watch src/resources/scss/:src/public/css/",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "bcryptjs": "^3.0.3",
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "express-handlebars": "^8.0.3",
+    "express-handlebars-sections": "^1.0.1",
+    "express-session": "^1.18.2",
+    "mysql2": "^3.15.3"
+  },
+  "devDependencies": {
+    "morgan": "^1.10.1",
+    "nodemon": "^3.1.10",
+    "sass": "^1.93.3"
+  }
+}

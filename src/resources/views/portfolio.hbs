@@ -1,0 +1,72 @@
+<div class="portfolio-page">
+    <div class="container">
+        <div class="page-header">
+            <h2>Danh mục đầu tư của bạn</h2>
+            <p>Quản lý và theo dõi tài sản crypto của bạn</p>
+        </div>
+
+        <div class="portfolio-stats">
+            <div class="portfolio-stat-card">
+                <h4>Tổng tài sản</h4>
+                <div class="stat-value">${{totals.totalValue}}</div>
+                <div class="stat-change {{#if totals.isPnlPositive}}text-positive{{else if totals.isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if totals.pnl}}{{#if totals.isPnlPositive}}+{{/if}}${{totals.pnl}}{{else}}$0.00{{/if}}</div>
+            </div>
+            <div class="portfolio-stat-card">
+                <h4>Lợi nhuận/Lỗ</h4>
+                <div class="stat-value {{#if totals.isPnlPositive}}text-positive{{else if totals.isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if totals.pnl}}{{#if totals.isPnlPositive}}+{{/if}}${{totals.pnl}}{{else}}$0.00{{/if}}</div>
+                <div class="stat-change {{#if totals.isPnlPositive}}text-positive{{else if totals.isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">0.00%</div>
+            </div>
+            <div class="portfolio-stat-card">
+                <h4>Số dư khả dụng</h4>
+                <div class="stat-value">${{balanceUsd}}</div>
+                <div class="stat-change stat-muted">100% tổng tài sản</div>
+            </div>
+        </div>
+
+        <div class="portfolio-table-wrapper">
+            <table class="portfolio-table">
+                <thead>
+                    <tr>
+                        <th>Tài sản</th>
+                        <th>Số lượng</th>
+                        <th>Giá mua</th>
+                        <th>Giá hiện tại</th>
+                        <th>Tổng giá trị</th>
+                        <th>Lãi/Lỗ</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#if holdings}}
+                        {{#each holdings}}
+                            <tr>
+                                <td>
+                                    <div class="crypto-name">
+                                        <div>
+                                            <div>{{coin}}</div>
+                                            <small class="crypto-symbol">{{symbol}}</small>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>{{qty}}</td>
+                                <td>${{buyPrice}}</td>
+                                <td>{{#if currentPrice}}${{currentPrice}}{{else}}-{{/if}}</td>
+                                <td><strong>{{#if marketValue}}${{marketValue}}{{else}}-{{/if}}</strong></td>
+                                <td class="{{#if isPnlPositive}}text-positive{{else if isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if pnl}}{{#if isPnlPositive}}+{{/if}}${{pnl}}{{else}}-{{/if}}</td>
+                                <td><a href="/trading?coin={{symbol}}" class="btn-trade">Bán</a></td>
+                            </tr>
+                        {{/each}}
+                    {{else}}
+                        <tr>
+                            <td colspan="6">Không có tài sản trong danh mục.</td>
+                        </tr>
+                    {{/if}}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{{#section "script"}}
+  <script src="/js/mainweb.js"></script>
+{{/section}}
