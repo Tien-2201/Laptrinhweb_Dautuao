@@ -1,11 +1,29 @@
-@charset "UTF-8";
+/* ============================================
+   GLOBAL & BASE STYLES
+   ============================================ */
 body {
-  width: 100vw;
+  width: 100%;
   height: 100vh;
   background-color: #E8F4F8;
+  margin: 0;
+  padding: 0;
 }
 
-/* Css của header*/
+.app {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.container {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 32px;
+}
+
+/* ============================================
+   HEADER & NAVIGATION
+   ============================================ */
 .header {
   background: #cdeaee;
   backdrop-filter: blur(10px);
@@ -16,18 +34,19 @@ body {
 }
 
 .header-container {
+  max-width: 1400px;
   margin: 0 auto;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.2rem 2rem;
+  padding: 19px 32px;
 }
 
 .logo {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
-  font-size: 1.6rem;
+  gap: 13px;
+  font-size: 26px;
   font-weight: 700;
   color: white;
   text-decoration: none;
@@ -48,7 +67,7 @@ body {
 
 nav {
   display: flex;
-  gap: 2.5rem;
+  gap: 40px;
   align-items: center;
 }
 
@@ -56,7 +75,7 @@ nav a {
   color: rgb(0, 0, 0);
   text-decoration: none;
   font-weight: 500;
-  font-size: 0.95rem;
+  font-size: 15px;
   transition: all 0.3s ease;
   position: relative;
 }
@@ -82,10 +101,10 @@ nav a:hover::after {
 
 .mobile-menu {
   display: none;
-  font-size: 1.5rem;
+  font-size: 24px;
   color: #552106;
   cursor: pointer;
-  padding: 0.5rem;
+  padding: 8px;
   transition: color 0.3s ease;
 }
 
@@ -109,74 +128,14 @@ nav a:hover::after {
   color: #87CEEB;
 }
 
-/* Header Mobile */
-@media (max-width: 768px) {
-  .header-container {
-    padding: 1rem;
-    position: relative;
-  }
-  nav {
-    display: none;
-    position: absolute;
-    top: 100%;
-    left: 0;
-    right: 0;
-    background: rgb(255, 255, 255);
-    backdrop-filter: blur(20px);
-    padding: 1.5rem;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-    flex-direction: column;
-    gap: 0.5rem;
-    z-index: 1001;
-  }
-  nav.active {
-    display: flex;
-    animation: slideDown 0.3s ease;
-  }
-  @keyframes slideDown {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  nav a {
-    padding: 1rem;
-    border-radius: 8px;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.05);
-    transition: all 0.3s ease;
-  }
-  nav a:hover {
-    background: rgba(139, 111, 71, 0.2);
-    transform: translateX(5px);
-  }
-  nav a::after {
-    display: none;
-  }
-  .mobile-menu {
-    display: block;
-  }
-  .logo {
-    font-size: 1.2rem;
-  }
-  .logo img {
-    width: 35px;
-    height: 35px;
-  }
-}
-.container {
-  margin: 0;
-}
-
+/* ============================================
+   FOOTER
+   ============================================ */
 .footer {
   background: #5A4A3A;
   color: white;
-  padding: 3rem 2rem 1.5rem;
+  padding: 48px 32px 24px;
+  margin-top: auto;
 }
 
 .footer-container {
@@ -187,14 +146,14 @@ nav a:hover::after {
 .footer-top {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 2rem;
-  margin-bottom: 2rem;
+  gap: 32px;
+  margin-bottom: 32px;
 }
 
 .footer-col h4 {
   color: white;
-  margin-bottom: 1rem;
-  font-size: 1.1rem;
+  margin-bottom: 16px;
+  font-size: 18px;
 }
 
 .footer-col ul {
@@ -204,13 +163,13 @@ nav a:hover::after {
 }
 
 .footer-col ul li {
-  margin-bottom: 0.7rem;
+  margin-bottom: 11px;
 }
 
 .footer-col ul li a {
   color: rgba(255, 255, 255, 0.7);
   text-decoration: none;
-  font-size: 0.9rem;
+  font-size: 14px;
   transition: color 0.3s;
 }
 
@@ -220,7 +179,7 @@ nav a:hover::after {
 
 .social-links {
   display: flex;
-  gap: 1rem;
+  gap: 16px;
 }
 
 .social-links a {
@@ -243,43 +202,89 @@ nav a:hover::after {
 
 .footer-bottom {
   border-top: 1px solid rgba(255, 255, 255, 0.1);
-  padding-top: 1.5rem;
+  padding-top: 24px;
   text-align: center;
 }
 
 .footer-bottom p {
   color: rgba(255, 255, 255, 0.6);
-  font-size: 0.9rem;
+  font-size: 14px;
   margin: 0;
 }
 
-@media (max-width: 768px) {
-  .footer-top {
-    grid-template-columns: repeat(2, 1fr);
-  }
+/* ============================================
+   TOAST NOTIFICATIONS
+   ============================================ */
+#toast-container {
+  position: fixed;
+  right: 12px;
+  bottom: 12px;
+  z-index: 1080;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
-@media (max-width: 480px) {
-  .footer-top {
-    grid-template-columns: 1fr;
-  }
-  .footer {
-    padding: 2rem 1rem 1rem;
-  }
+
+.toast-item {
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  box-sizing: border-box;
+  min-width: 200px;
+  max-width: 380px;
+  padding: 14px 14px;
+  border-radius: 6px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.12);
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 200ms ease, transform 200ms ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
 }
-/*Login*/
+
+.toast-item i {
+  font-size: 18px;
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.toast-item.toast-success {
+  background: #28a745;
+  color: #fff;
+}
+
+.toast-item.toast-error {
+  background: #dc3545;
+  color: #fff;
+}
+
+.toast-item.toast-warn {
+  background: #ffc107;
+  color: #000;
+}
+
+.toast-item.toast-info {
+  background: #0d6efd;
+  color: #fff;
+}
+
+/* ============================================
+   LOGIN / REGISTER
+   ============================================ */
 .login {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2rem;
+  padding: 32px;
 }
 
 .auth-box {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: white;
   border-radius: 15px;
-  padding: 2.5rem;
+  padding: 40px;
   max-width: 400px;
   width: 100%;
   box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
@@ -288,7 +293,7 @@ nav a:hover::after {
 
 .auth-box h2 {
   color: #5A4A3A;
-  margin: 0 0 2rem 0;
+  margin: 0 0 32px 0;
   text-align: center;
   padding: 0;
 }
@@ -304,25 +309,25 @@ nav a:hover::after {
 }
 
 .form-group {
-  margin: 0 0 1.5rem 0;
+  margin: 0 0 24px 0;
   padding: 0;
   box-sizing: border-box;
 }
 
 .form-group label {
   display: block;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px 0;
   padding: 0;
   color: #5A4A3A;
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .form-group input {
   width: 100%;
-  padding: 0.8rem;
+  padding: 13px;
   border: 1px solid #E8F4F8;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 15px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   margin: 0;
   box-sizing: border-box;
@@ -335,15 +340,15 @@ nav a:hover::after {
 
 .login-btn {
   width: 100%;
-  padding: 0.9rem;
+  padding: 14px;
   background: #C17642;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   cursor: pointer;
-  margin-top: 1rem;
+  margin-top: 16px;
   box-sizing: border-box;
 }
 
@@ -353,10 +358,10 @@ nav a:hover::after {
 
 .switch-form {
   text-align: center;
-  margin: 1.5rem 0 0 0;
+  margin: 24px 0 0 0;
   padding: 0;
   color: #666;
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .switch-form a {
@@ -369,42 +374,33 @@ nav a:hover::after {
   text-decoration: underline;
 }
 
-@media (max-width: 480px) {
-  .auth-box {
-    padding: 2rem;
-  }
-}
-/* Common styles */
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 2rem;
-}
-
+/* ============================================
+   COMMON / SHARED STYLES
+   ============================================ */
 .page-header {
   background: white;
-  padding: 1.5rem;
+  padding: 24px;
   border-radius: 10px;
-  margin-bottom: 2rem;
+  margin-bottom: 32px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .page-header h2 {
   color: #5A4A3A;
-  margin: 0 0 0.5rem 0;
+  margin: 0 0 8px 0;
+  font-size: 32px;
 }
 
 .page-header p {
   color: #888;
-  font-size: 0.9rem;
+  font-size: 14px;
   margin: 0;
 }
 
-/* Common crypto styles */
 .crypto-name {
   display: flex;
   align-items: center;
-  gap: 0.8rem;
+  gap: 13px;
   font-weight: 600;
 }
 
@@ -417,27 +413,28 @@ nav a:hover::after {
   align-items: center;
   justify-content: center;
   color: #C17642;
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .crypto-symbol {
   color: #888;
-  font-size: 0.85rem;
+  font-size: 14px;
 }
 
-/* Text colors */
 .text-positive {
-  color: #22c55e;
+  color: #22c55e !important;
+  font-weight: bold !important;
 }
 
 .text-negative {
-  color: #ef4444;
+  color: #ef4444 !important;
+  font-weight: bold !important;
 }
 
 .btn-primary {
   display: inline-block;
-  margin-top: 2rem;
-  padding: 0.75rem 2rem;
+  margin-top: 32px;
+  padding: 12px 32px;
   background-color: #5A4A3A;
   color: white;
   text-decoration: none;
@@ -450,7 +447,9 @@ nav a:hover::after {
   background-color: #7B5F4C;
 }
 
-/* Main MARKET */
+/* ============================================
+   MARKET PAGE
+   ============================================ */
 .market-page {
   min-height: calc(100vh - 200px);
 }
@@ -469,15 +468,15 @@ nav a:hover::after {
 
 .market-table th {
   background: #afebff;
-  padding: 1rem;
+  padding: 16px;
   text-align: left;
   color: #5A4A3A;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 14px;
 }
 
 .market-table td {
-  padding: 1rem;
+  padding: 16px;
   border-bottom: 1px solid #f0f0f0;
   color: #333;
   font-weight: bold;
@@ -496,13 +495,13 @@ nav a:hover::after {
 }
 
 .btn-trade {
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   background: #C17642;
   color: white;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 0.85rem;
+  font-size: 14px;
   text-decoration: none;
   display: inline-block;
 }
@@ -511,7 +510,183 @@ nav a:hover::after {
   background: #8B4513;
 }
 
-/* Main PORTFOLIO */
+/* Market Mobile Card View */
+.market-mobile-view {
+  display: none;
+}
+
+.market-desktop-view {
+  display: block;
+}
+
+.market-cards-wrapper {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.market-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+}
+
+.market-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.market-card:hover {
+  border-color: #C17642;
+  box-shadow: 0 4px 16px rgba(193, 118, 66, 0.15);
+  transform: translateY(-2px);
+}
+
+.market-card-header {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.market-card-header .crypto-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.market-card-header .crypto-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #E8F4F8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C17642;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.market-card-header .card-name {
+  font-weight: 600;
+  color: #5A4A3A;
+  font-size: 16px;
+}
+
+.market-card-header .crypto-symbol {
+  color: #888;
+  font-size: 13px;
+}
+
+.market-card-body {
+  margin-bottom: 12px;
+}
+
+.card-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  font-size: 14px;
+}
+
+.card-label {
+  color: #888;
+  font-weight: 500;
+}
+
+.card-value {
+  color: #333;
+  font-weight: 600;
+}
+
+.card-value.text-positive {
+  color: #22c55e !important;
+}
+
+.card-value.text-negative {
+  color: #ef4444 !important;
+}
+
+.market-card-footer {
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+.btn-trade-card {
+  width: 100%;
+  padding: 10px 16px;
+  background: #C17642;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+  display: block;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.btn-trade-card:hover {
+  background: #8B4513;
+}
+
+/* Market Pagination */
+.market-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pagination-info {
+  font-weight: 600;
+  color: #5A4A3A;
+  font-size: 14px;
+}
+
+/* Pagination controls */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.pagination-btn {
+  padding: 8px 16px;
+  background: #C17642;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-weight: 600;
+  transition: background 0.3s;
+}
+
+.pagination-btn:hover {
+  background: #8B4513;
+}
+
+/* ============================================
+   PORTFOLIO PAGE
+   ============================================ */
 .portfolio-page {
   min-height: calc(100vh - 200px);
 }
@@ -519,38 +694,47 @@ nav a:hover::after {
 .portfolio-stats {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .portfolio-stat-card {
   background: white;
-  padding: 1.5rem;
+  padding: 24px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .portfolio-stat-card h4 {
   color: #888;
-  font-size: 0.85rem;
-  margin: 0 0 0.8rem 0;
+  font-size: 14px;
+  margin: 0 0 13px 0;
   font-weight: 500;
 }
 
 .stat-value {
-  font-size: 1.8rem;
+  font-size: 29px;
   font-weight: 700;
   color: #5A4A3A;
   margin: 0;
 }
 
 .stat-change {
-  font-size: 0.9rem;
-  margin-top: 0.5rem;
+  font-size: 14px;
+  margin-top: 8px;
 }
 
 .stat-muted {
   color: #888;
+}
+
+/* Portfolio Table/Card View Toggle */
+.portfolio-desktop-view {
+  display: block;
+}
+
+.portfolio-mobile-view {
+  display: none;
 }
 
 .portfolio-table-wrapper {
@@ -567,15 +751,230 @@ nav a:hover::after {
 
 .portfolio-table th {
   background: #E8F4F8;
-  padding: 1rem;
+  padding: 16px;
   text-align: left;
   color: #5A4A3A;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 14px;
+}
+
+/* Portfolio Cards Wrapper */
+.portfolio-cards-wrapper {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.portfolio-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.portfolio-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.portfolio-card:hover {
+  border-color: #C17642;
+  box-shadow: 0 4px 16px rgba(193, 118, 66, 0.15);
+  transform: translateY(-2px);
+}
+
+.portfolio-card-header {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.portfolio-card-header .crypto-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.portfolio-card-header .card-name {
+  font-weight: 600;
+  color: #5A4A3A;
+  font-size: 16px;
+}
+
+.portfolio-card-body {
+  margin-bottom: 12px;
+}
+
+.portfolio-card-footer {
+  text-align: center;
+  padding-top: 12px;
+  border-top: 1px solid #f0f0f0;
+}
+
+/* Portfolio Pagination */
+.portfolio-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.portfolio-pagination .pagination-btn {
+  padding: 8px 16px;
+  background: #C17642;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.portfolio-pagination .pagination-btn:hover {
+  background: #8B4513;
+}
+
+.portfolio-pagination .pagination-info {
+  font-weight: 600;
+  color: #5A4A3A;
+  font-size: 14px;
+}
+
+/* History Pagination */
+.history-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.history-pagination .pagination-btn {
+  padding: 8px 16px;
+  background: #C17642;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.history-pagination .pagination-btn:hover {
+  background: #8B4513;
+}
+
+.history-pagination .pagination-info {
+  font-weight: 600;
+  color: #5A4A3A;
+  font-size: 14px;
+}
+
+/* History Table/Card View Toggle */
+.history-desktop-view {
+  display: block;
+}
+
+.history-mobile-view {
+  display: none;
+}
+
+.history-cards-wrapper {
+  background: white;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+.history-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.history-card {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.history-card:hover {
+  border-color: #C17642;
+  box-shadow: 0 4px 16px rgba(193, 118, 66, 0.15);
+  transform: translateY(-2px);
+}
+
+.history-card-header {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.history-card-header .crypto-name {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.history-card-header .crypto-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #E8F4F8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #C17642;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.history-card-header .card-name {
+  font-weight: 600;
+  color: #5A4A3A;
+  font-size: 16px;
+}
+
+.history-card-body {
+  margin-bottom: 12px;
+}
+
+.history-pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 16px;
+  background: white;
+  border-radius: 10px;
 }
 
 .portfolio-table td {
-  padding: 1rem;
+  padding: 16px;
   border-bottom: 1px solid #f0f0f0;
   color: #333;
 }
@@ -584,21 +983,9 @@ nav a:hover::after {
   background: #f9f9f9;
 }
 
-.text-positive {
-  color: #16a34a !important;
-  font-weight: bold;
-}
-
-.text-negative {
-  color: #dc2626 !important;
-  font-weight: bold;
-}
-
-.stat-muted {
-  color: #6b7280 !important;
-}
-
-/* Main TRADING */
+/* ============================================
+   TRADING PAGE
+   ============================================ */
 .trading-page {
   min-height: calc(100vh - 200px);
 }
@@ -606,39 +993,32 @@ nav a:hover::after {
 .trading-panel {
   display: grid;
   grid-template-columns: 2fr 1fr;
-  gap: 2rem;
-}
-
-.trading-form-wrapper {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-}
-
-.trading-form h3 {
-  color: #5A4A3A;
-  margin: 0 0 1.5rem 0;
-}
-
-.trading-form-group {
-  margin-bottom: 1.5rem;
+  gap: 32px;
 }
 
 .trading-form-group label {
   display: block;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
   color: #5A4A3A;
-  font-size: 0.9rem;
+  font-size: 14px;
+}
+
+.trading-form h3 {
+  color: #5A4A3A;
+  margin: 0 0 24px 0;
+}
+
+.trading-form-group {
+  margin-bottom: 24px;
 }
 
 .trading-input,
 .trading-select {
   width: 100%;
-  padding: 0.8rem;
+  padding: 13px;
   border: 1px solid #E8F4F8;
   border-radius: 8px;
-  font-size: 0.95rem;
+  font-size: 15px;
   box-sizing: border-box;
   font-family: "Segoe UI", sans-serif;
 }
@@ -652,17 +1032,17 @@ nav a:hover::after {
 .trading-actions {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 1rem;
-  margin-top: 2rem;
+  gap: 16px;
+  margin-top: 32px;
 }
 
 .trading-btn-buy {
-  padding: 1rem;
+  padding: 16px;
   background: #22c55e;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   font-family: "Segoe UI", sans-serif;
@@ -673,12 +1053,12 @@ nav a:hover::after {
 }
 
 .trading-btn-sell {
-  padding: 1rem;
+  padding: 16px;
   background: #ef4444;
   color: white;
   border: none;
   border-radius: 8px;
-  font-size: 1rem;
+  font-size: 16px;
   font-weight: 600;
   cursor: pointer;
   font-family: "Segoe UI", sans-serif;
@@ -688,45 +1068,14 @@ nav a:hover::after {
   background: #dc2626;
 }
 
-.trading-summary-wrapper {
-  background: white;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  height: fit-content;
-}
-
-.trading-summary h3 {
-  color: #5A4A3A;
-  margin: 0 0 1.5rem 0;
-}
-
-.trading-summary-item {
-  display: flex;
-  justify-content: space-between;
-  padding: 0.8rem 0;
-  border-bottom: 1px solid #f0f0f0;
-}
-
-.trading-summary-total {
-  border-bottom: none;
-  font-weight: 600;
-  font-size: 1.1rem;
-  margin-top: 1rem;
-  padding-top: 1rem;
-  border-top: 2px solid #E8F4F8;
-}
-
-/* Trading layout: large chart + floating small order box */
 .trading-chart-wrapper {
   background: white;
-  padding: 1rem;
+  padding: 16px;
   border-radius: 10px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   min-height: 420px;
 }
 
-/* External chart preview styles (moved from inline) */
 .external-chart-anchor {
   width: 100%;
   min-height: 360px;
@@ -758,7 +1107,7 @@ nav a:hover::after {
   width: 100%;
   text-align: center;
   color: #888;
-  padding: 2rem 0;
+  padding: 32px 0;
 }
 
 .external-chart-textlink-wrap {
@@ -777,74 +1126,64 @@ nav a:hover::after {
 }
 
 .trading-form-floating {
-  /* Keep the form inside the page flow so it scrolls with content */
   position: static;
   width: 340px;
   max-width: 100%;
   align-self: start;
-  place-self: start;
 }
 
 .trading-form-floating .trading-form {
   background: white;
-  padding: 1rem;
+  padding: 16px;
   border-radius: 10px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
   width: 100%;
 }
 
-@media (max-width: 992px) {
-  .trading-panel {
-    grid-template-columns: 1fr;
-  }
-  .trading-form-floating {
-    position: static;
-    width: 100%;
-    margin-top: 1rem;
-  }
-}
-/* Main HISTORY */
+/* ============================================
+   HISTORY PAGE
+   ============================================ */
 .history-summary {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 1.5rem;
-  margin-bottom: 2rem;
+  gap: 24px;
+  margin-bottom: 32px;
 }
 
 .summary-card {
   background: white;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .summary-card h3 {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #6b7280;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
   text-transform: uppercase;
   font-weight: 600;
 }
 
 .summary-value {
-  font-size: 2rem;
+  font-size: 32px;
   font-weight: bold;
   color: #5A4A3A;
-  margin-bottom: 0.5rem;
+  margin-bottom: 8px;
 }
 
 .holdings-list {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 12px;
 }
 
 .holding-item {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
-  padding: 0.75rem;
+  gap: 12px;
+  padding: 12px;
   background: #f9fafb;
   border-radius: 8px;
 }
@@ -856,13 +1195,13 @@ nav a:hover::after {
 }
 
 .holding-amount {
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #4b5563;
   flex: 1;
 }
 
 .holding-price {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: #9ca3af;
 }
 
@@ -870,39 +1209,37 @@ nav a:hover::after {
   color: #9ca3af;
   font-style: italic;
   text-align: center;
-  padding: 1rem 0;
+  padding: 16px 0;
 }
 
-/* Sửa lại phần filters */
 .history-filters {
   background: white;
-  padding: 1.5rem;
+  padding: 24px;
   border-radius: 10px;
-  margin-bottom: 1.5rem;
+  margin-bottom: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
 .history-filters h3 {
-  font-size: 1.25rem;
-  margin-bottom: 1rem;
+  font-size: 20px;
+  margin-bottom: 16px;
   color: #5A4A3A;
 }
 
 .filter-buttons {
   display: flex;
-  gap: 0.5rem;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
-/* Cập nhật lại history-filter-btn */
 .history-filter-btn {
-  padding: 0.5rem 1rem;
+  padding: 8px 16px;
   border: 1px solid #e5e7eb;
   background: white;
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.2s;
-  font-size: 0.875rem;
+  font-size: 14px;
   color: #5A4A3A;
   font-family: "Segoe UI", sans-serif;
 }
@@ -917,24 +1254,23 @@ nav a:hover::after {
   border-color: #C17642;
 }
 
-/* Cập nhật history-type badges */
 .history-type-buy {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
+  padding: 4px 12px;
   background: #dcfce7;
   color: #16a34a;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 600;
 }
 
 .history-type-sell {
   display: inline-block;
-  padding: 0.25rem 0.75rem;
+  padding: 4px 12px;
   background: #fee2e2;
   color: #dc2626;
   border-radius: 6px;
-  font-size: 0.875rem;
+  font-size: 14px;
   font-weight: 600;
 }
 
@@ -946,8 +1282,8 @@ nav a:hover::after {
 .history-table {
   width: 100%;
   border-collapse: separate;
-  border-spacing: 0 8px; /* Giãn dòng cho đẹp */
-  font-size: 0.95rem;
+  border-spacing: 0 8px;
+  font-size: 15px;
 }
 
 .history-table thead tr th {
@@ -955,7 +1291,7 @@ nav a:hover::after {
   padding: 12px 16px;
   text-align: left;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 14px;
   color: #6b7280;
   text-transform: uppercase;
 }
@@ -977,7 +1313,6 @@ nav a:hover::after {
   color: #374151;
 }
 
-/* Làm bo góc từng dòng */
 .history-table tbody tr td:first-child {
   border-radius: 10px 0 0 10px;
 }
@@ -986,88 +1321,287 @@ nav a:hover::after {
   border-radius: 0 10px 10px 0;
 }
 
-/* Date + time */
 .history-datetime {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 15px;
   color: #111827;
 }
 
 .history-time {
-  font-size: 0.75rem;
+  font-size: 12px;
   color: #6b7280;
 }
 
 .history-table strong {
   color: #111827;
-  font-size: 1rem;
+  font-size: 16px;
 }
 
-.page-header {
-  margin-bottom: 2rem;
-}
-
-.page-header h2 {
-  font-size: 2rem;
-  color: #5A4A3A;
-  margin-bottom: 0.5rem;
-}
-
-.page-header p {
-  color: #6b7280;
-  font-size: 1rem;
-}
-
-.auth-box {
+/* ============================================
+   PROFILE PAGE
+   ============================================ */
+.profile-auth-box {
   background: #fff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  padding: 1.5rem;
+  padding: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.auth-box h3 {
-  margin-bottom: 1rem;
-  font-size: 1.25rem;
+.profile-auth-box h3 {
+  margin-bottom: 16px;
+  font-size: 20px;
   color: #5A4A3A;
 }
 
-.auth-box p {
-  margin: 0.5rem 0;
-  font-size: 1rem;
+.profile-auth-box p {
+  margin: 8px 0;
+  font-size: 16px;
   color: #333;
 }
 
-.auth-box ul {
+.profile-auth-box ul {
   list-style: none;
   padding-left: 0;
-  margin: 0.5rem 0;
+  margin: 8px 0;
 }
 
-.auth-box li {
-  padding: 0.5rem 0;
+.profile-auth-box li {
+  padding: 8px 0;
   border-bottom: 1px solid #f0f0f0;
   color: #4b5563;
 }
 
-.login-btn {
-  display: inline;
+.profile-login-btn {
+  display: inline-block;
   background-color: #C17642;
   color: white;
-  padding: 0.75rem 1.5rem;
+  padding: 12px 24px;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
   transition: all 0.2s;
 }
 
-.login-btn:hover {
+.profile-login-btn:hover {
   background-color: #a85e2e;
 }
 
-/*RESPONSIVE main*/
-@media (max-width: 768px) {
-  /* Market Page - Card Layout */
+/* ============================================
+   RESPONSIVE: TABLET + MOBILE (max-width: 700px)
+   ============================================ */
+@media (max-width: 700px) {
+  body {
+    height: auto;
+  }
+  .container {
+    padding: 16px;
+  }
+  .header-container {
+    padding: 16px;
+  }
+  nav {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: rgb(255, 255, 255);
+    backdrop-filter: blur(20px);
+    padding: 24px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    flex-direction: column;
+    gap: 8px;
+    z-index: 1001;
+  }
+  nav.active {
+    display: flex;
+    animation: slideDown 0.3s ease;
+  }
+  @keyframes slideDown {
+    from {
+      opacity: 0;
+      transform: translateY(-10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  nav a {
+    padding: 16px;
+    border-radius: 8px;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.05);
+    transition: all 0.3s ease;
+    font-size: 14px;
+  }
+  nav a:hover {
+    background: rgba(139, 111, 71, 0.2);
+    transform: translateX(5px);
+  }
+  nav a::after {
+    display: none;
+  }
+  .mobile-menu {
+    display: block;
+  }
+  .logo {
+    font-size: 19px;
+    gap: 10px;
+  }
+  .logo img {
+    width: 35px;
+    height: 35px;
+  }
+  .footer {
+    padding: 32px 16px 16px;
+  }
+  .footer-top {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px;
+  }
+  .footer-col h4 {
+    font-size: 16px;
+    margin-bottom: 12px;
+  }
+  .auth-box {
+    padding: 32px;
+  }
+  /* Market page responsive: show cards, hide table on mobile */
+  .market-desktop-view {
+    display: none;
+  }
+  .market-mobile-view {
+    display: block;
+  }
+  .market-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .market-card {
+    padding: 14px;
+  }
+  .market-card-header {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+  .market-card-header .crypto-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+  .market-card-header .card-name {
+    font-size: 15px;
+  }
+  .card-row {
+    padding: 6px 0;
+    font-size: 13px;
+  }
+  .market-card-footer {
+    padding-top: 10px;
+  }
+  .btn-trade-card {
+    padding: 8px 12px;
+    font-size: 13px;
+  }
+  .market-pagination {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+  .pagination-info {
+    width: 100%;
+    text-align: center;
+    order: 3;
+  }
+  .pagination-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 8px;
+    font-size: 13px;
+    text-align: center;
+  }
+  /* Portfolio page responsive: show cards, hide table on mobile */
+  .portfolio-desktop-view {
+    display: none;
+  }
+  .portfolio-mobile-view {
+    display: block;
+  }
+  .portfolio-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .portfolio-card {
+    padding: 14px;
+  }
+  .portfolio-card-header {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+  .portfolio-card-header .card-name {
+    font-size: 15px;
+  }
+  .portfolio-pagination {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+  .portfolio-pagination .pagination-info {
+    width: 100%;
+    text-align: center;
+    order: 3;
+  }
+  .portfolio-pagination .pagination-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
+  /* History page responsive: show cards, hide table on mobile */
+  .history-desktop-view {
+    display: none;
+  }
+  .history-mobile-view {
+    display: block;
+  }
+  .history-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .history-card {
+    padding: 14px;
+  }
+  .history-card-header {
+    margin-bottom: 10px;
+    padding-bottom: 10px;
+  }
+  .history-card-header .crypto-icon {
+    width: 35px;
+    height: 35px;
+    font-size: 14px;
+  }
+  .history-card-header .card-name {
+    font-size: 15px;
+  }
+  .history-pagination {
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 12px;
+  }
+  .history-pagination .pagination-info {
+    width: 100%;
+    text-align: center;
+    order: 3;
+  }
+  .history-pagination .pagination-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 10px 8px;
+    font-size: 13px;
+  }
   .market-page .market-table-wrapper {
     background: transparent;
     box-shadow: none;
@@ -1082,38 +1616,63 @@ nav a:hover::after {
   }
   .market-page .market-table tr {
     background: white;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    margin-bottom: 16px;
+    padding: 16px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
   .market-page .market-table td {
     display: flex;
     justify-content: space-between;
-    padding: 0.5rem 0;
+    padding: 8px 0;
     border: none;
   }
   .market-page .market-table td:before {
     content: attr(data-label);
     font-weight: 600;
     color: #888;
-    font-size: 0.85rem;
+    font-size: 13px;
   }
   .market-page .market-table td:first-child {
     border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 1rem;
-    margin-bottom: 0.5rem;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
   }
-  /* Trading adjustments for tablet/mobile */
+  .market-page .market-table td:first-child:before {
+    display: none;
+  }
+  /* Pagination controls */
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    margin-top: 24px;
+    padding: 16px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  }
+  .pagination-btn {
+    padding: 8px 16px;
+    background: #C17642;
+    color: white;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background 0.3s;
+  }
+  .pagination-btn:hover {
+    background: #8B4513;
+  }
   .trading-panel {
-    display: grid;
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 16px;
   }
   .trading-chart-wrapper {
     order: 1;
     min-height: 300px;
-    padding: 0.75rem;
+    padding: 12px;
   }
   .trading-chart-wrapper canvas {
     width: 100% !important;
@@ -1123,67 +1682,50 @@ nav a:hover::after {
     order: 2;
     position: static;
     width: 100%;
-    margin-top: 1rem;
+    margin-top: 16px;
     padding: 0;
   }
   .trading-form-floating .trading-form {
-    padding: 1rem;
+    padding: 16px;
     box-shadow: none;
+  }
+  .trading-form-wrapper {
+    padding: 16px;
   }
   .trading-actions {
     grid-template-columns: 1fr;
-    gap: 0.75rem;
+    gap: 12px;
   }
   .trading-btn-buy,
   .trading-btn-sell {
     width: 100%;
-    padding: 0.9rem;
+    padding: 14px;
   }
   .trading-summary-wrapper {
-    margin-top: 1rem;
+    margin-top: 16px;
   }
   .external-chart-anchor {
     min-height: 300px;
-    padding: 0.75rem;
+    padding: 12px;
   }
   .external-chart-anchor-text {
-    padding: 1rem 0;
+    padding: 16px 0;
   }
   .external-chart-textlink-wrap {
     padding-top: 6px;
   }
-}
-@media (max-width: 768px) and (max-width: 480px) {
-  .trading-chart-wrapper {
-    min-height: 240px;
-    padding: 0.6rem;
-  }
   .trading-form h3 {
-    font-size: 1rem;
+    font-size: 16px;
   }
   .trading-input,
   .trading-select {
-    padding: 0.6rem;
-    font-size: 0.95rem;
+    padding: 10px;
+    font-size: 14px;
   }
-  .external-chart-anchor {
-    min-height: 240px;
-    padding: 0.6rem;
+  .portfolio-stats {
+    grid-template-columns: 1fr;
+    gap: 16px;
   }
-  .external-chart-anchor-text {
-    padding: 0.6rem 0;
-  }
-  .page-header h2 {
-    font-size: 1.1rem;
-  }
-}
-@media (max-width: 768px) {
-  .market-page .market-table td:first-child:before {
-    display: none;
-  }
-}
-@media (max-width: 768px) {
-  /* Portfolio Page - Card Layout */
   .portfolio-page .portfolio-table thead {
     display: none;
   }
@@ -1194,39 +1736,38 @@ nav a:hover::after {
   }
   .portfolio-page .portfolio-table tr {
     background: white;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    margin-bottom: 16px;
+    padding: 16px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
   .portfolio-page .portfolio-table td {
     display: flex;
     justify-content: space-between;
-    padding: 0.5rem 0;
+    padding: 8px 0;
     border: none;
   }
   .portfolio-page .portfolio-table td:before {
     content: attr(data-label);
     font-weight: 600;
     color: #888;
-    font-size: 0.85rem;
+    font-size: 13px;
   }
   .portfolio-page .portfolio-table td:first-child:before {
     display: none;
   }
-  /* History Page - Card Layout */
   .history-summary {
     grid-template-columns: 1fr;
-    gap: 1rem;
+    gap: 16px;
   }
   .summary-card {
-    padding: 1.25rem;
+    padding: 20px;
   }
   .summary-value {
-    font-size: 1.5rem;
+    font-size: 24px;
   }
   .holding-item {
-    padding: 0.5rem;
+    padding: 8px;
   }
   .history-page .history-table thead {
     display: none;
@@ -1238,8 +1779,8 @@ nav a:hover::after {
   }
   .history-page .history-table tr {
     background: white;
-    margin-bottom: 1rem;
-    padding: 1rem;
+    margin-bottom: 16px;
+    padding: 16px;
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
@@ -1247,57 +1788,56 @@ nav a:hover::after {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0.5rem 0;
+    padding: 8px 0;
     border: none;
   }
   .history-page .history-table td:before {
     content: attr(data-label);
     font-weight: 600;
     color: #888;
-    font-size: 0.85rem;
+    font-size: 13px;
   }
   .history-page .history-table td:first-child:before {
     display: none;
   }
   .history-page .history-table td:first-child {
     border-bottom: 1px solid #f0f0f0;
-    padding-bottom: 1rem;
-    margin-bottom: 0.5rem;
+    padding-bottom: 16px;
+    margin-bottom: 8px;
   }
-  .auth-box {
-    padding: 1rem;
+  .history-page .history-table tr:nth-child(n+4) {
+    display: none;
+  }
+  .profile-auth-box {
+    padding: 16px;
   }
   .page-header h2 {
-    font-size: 1.5rem;
+    font-size: 24px;
   }
   .page-header p {
-    font-size: 0.875rem;
+    font-size: 14px;
   }
-  .auth-box h3 {
-    font-size: 1.1rem;
+  .profile-auth-box h3 {
+    font-size: 18px;
   }
-  .auth-box p,
-  .auth-box li {
-    font-size: 0.875rem;
+  .profile-auth-box p,
+  .profile-auth-box li {
+    font-size: 14px;
   }
-  .login-btn {
+  .profile-login-btn {
     width: 100%;
     text-align: center;
-    padding: 0.6rem 1rem;
+    padding: 10px 16px;
   }
-}
-/* Reduce horizontal padding on small screens to avoid large side margins */
-@media (max-width: 768px) {
-  .container {
-    padding-left: 1rem;
-    padding-right: 1rem;
-    padding-top: 1rem;
-    padding-bottom: 1rem;
+  .toast-item {
+    min-width: 160px;
+    max-width: 320px;
+    padding: 12px 12px;
+    font-size: 13px;
   }
-}
-@media (max-width: 480px) {
-  .container {
-    padding: 0.75rem;
+  .toast-item i {
+    font-size: 16px;
+    width: 18px;
   }
 }
 

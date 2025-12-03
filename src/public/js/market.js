@@ -1,6 +1,19 @@
 
 async function fetchMarketData() {
   try {
+    let coins = [];
+    try {
+      const creq = await fetch('/market/coins');
+      if (creq.ok) {
+        const cj = await creq.json();
+        coins = cj.coins || [];
+      }
+    } catch (e) {
+      // Silently ignore coin fetch errors
+    }
+
+    ensureRows(coins);
+
     const res = await fetch('/market/data');
     if (!res.ok) throw new Error('Server response ' + res.status);
     const json = await res.json();
@@ -15,42 +28,103 @@ async function fetchMarketData() {
   }
 }
 
+function ensureRows(coins) {
+  const tbody = document.querySelector('.market-table tbody');
+  if (!tbody) return;
+  coins.forEach(c => {
+    if (!c || !c.coin_id) return;
+    const existing = tbody.querySelector(`tr[data-coin-id="${c.coin_id}"]`);
+    if (existing) return;
+
+    const tr = document.createElement('tr');
+    tr.setAttribute('data-coin-id', c.coin_id);
+    tr.innerHTML = `
+      <td>
+        <div class="crypto-name">
+          <div class="crypto-icon">${(c.symbol||'').toUpperCase()}</div>
+          <div>
+            <div>${c.name || c.coin_id}</div>
+            <small class="crypto-symbol">${(c.symbol||'').toUpperCase()}</small>
+          </div>
+        </div>
+      </td>
+      <td><strong>-</strong></td>
+      <td data-change-24h>-</td>
+      <td data-change-7d>-</td>
+      <td>-</td>
+      <td><a href="/trading?coin=${(c.symbol||'').toUpperCase()}" class="btn-trade">Giao dịch</a></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
 function updateTable(data) {
   data.forEach(c => {
     const row = document.querySelector(`tr[data-coin-id="${c.id}"]`);
+    const card = document.querySelector(`.market-card[data-coin-id="${c.id}"]`);
     const priceVal = c.current_price ?? c.price ?? c.currentPrice;
     const ch24 = c.price_change_percentage_24h_in_currency ?? c.change24h ?? c.price_change_percentage_24h;
     const ch7 = c.price_change_percentage_7d_in_currency ?? c.change7d ?? c.price_change_percentage_7d;
     const marketCap = c.market_cap ?? c.marketCap;
 
-    console.debug('[market.js] updateTable for', c.id, { priceVal, ch24, ch7, marketCap, rowFound: !!row });
+    if (row) {
+      const tds = row.querySelectorAll('td');
 
-    if (!row) return;
-    const tds = row.querySelectorAll('td');
-
-    // Update price: prefer updating <strong> if exists to avoid wiping other markup
-    if (tds[1]) {
-      const strong = tds[1].querySelector('strong');
-      const formatted = `$${formatNumber(priceVal)}"`;
-      if (strong) {
-        strong.textContent = `$${formatNumber(priceVal)}`;
-      } else {
-        tds[1].textContent = `$${formatNumber(priceVal)}`;
+      if (tds[1]) {
+        const strong = tds[1].querySelector('strong');
+        const formatted = `$${formatNumber(priceVal)}`;
+        if (strong) {
+          strong.textContent = formatted;
+        } else {
+          tds[1].textContent = formatted;
+        }
       }
-      console.debug('[market.js] set price for', c.id, '->', formatted);
+
+      if (tds[2]) {
+        tds[2].textContent = formatPercent(ch24);
+        tds[2].classList.toggle('text-positive', ch24 >= 0);
+        tds[2].classList.toggle('text-negative', ch24 < 0);
+      }
+      if (tds[3]) {
+        tds[3].textContent = formatPercent(ch7);
+        tds[3].classList.toggle('text-positive', ch7 >= 0);
+        tds[3].classList.toggle('text-negative', ch7 < 0);
+      }
+      if (tds[4]) tds[4].textContent = `$${formatMarketCap(marketCap)}`;
     }
 
-    if (tds[2]) {
-      tds[2].textContent = formatPercent(ch24);
-      tds[2].classList.toggle('text-positive', ch24 >= 0);
-      tds[2].classList.toggle('text-negative', ch24 < 0);
+    if (card) {
+      const priceEl = card.querySelector('.price-value');
+      const change24hEl = card.querySelector('.change-24h');
+      const change7dEl = card.querySelector('.change-7d');
+      const marketcapEl = card.querySelector('.marketcap-value');
+
+      if (priceEl) {
+        const strong = priceEl.querySelector('strong');
+        const formatted = `$${formatNumber(priceVal)}`;
+        if (strong) {
+          strong.textContent = formatted;
+        } else {
+          priceEl.textContent = formatted;
+        }
+      }
+
+      if (change24hEl) {
+        change24hEl.textContent = formatPercent(ch24);
+        change24hEl.classList.toggle('text-positive', ch24 >= 0);
+        change24hEl.classList.toggle('text-negative', ch24 < 0);
+      }
+
+      if (change7dEl) {
+        change7dEl.textContent = formatPercent(ch7);
+        change7dEl.classList.toggle('text-positive', ch7 >= 0);
+        change7dEl.classList.toggle('text-negative', ch7 < 0);
+      }
+
+      if (marketcapEl) {
+        marketcapEl.textContent = `$${formatMarketCap(marketCap)}`;
+      }
     }
-    if (tds[3]) {
-      tds[3].textContent = formatPercent(ch7);
-      tds[3].classList.toggle('text-positive', ch7 >= 0);
-      tds[3].classList.toggle('text-negative', ch7 < 0);
-    }
-    if (tds[4]) tds[4].textContent = `$${formatMarketCap(marketCap)}`;
   });
 }
 
@@ -73,15 +147,12 @@ function formatMarketCap(m) {
   if (m >= 1e6) return (m / 1e6).toFixed(2) + 'M';
   return Number(m).toLocaleString();
 }
-
-// initial fetch and interval
 document.addEventListener('DOMContentLoaded', () => {
   fetchMarketData();
   setInterval(fetchMarketData, 60 * 1000);
 });
 
 function showStaleIndicator(isStale, updatedAt) {
-  // find or create indicator under .page-header
   const header = document.querySelector('.page-header');
   if (!header) return;
   let badge = document.getElementById('market-stale-indicator');

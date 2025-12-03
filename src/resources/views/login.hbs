@@ -63,7 +63,7 @@
     <script src="/js/login.js"></script>
     {{#if error}}
         <script>
-            alert("{{error}}");
+            showToast("{{error}}", 'error');
         </script>
     {{/if}}
 {{/section}}

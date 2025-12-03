@@ -42,7 +42,7 @@
       </div>
     </div>
 
-    <div class="history-table-wrapper">
+    <div class="history-table-wrapper history-desktop-view">
       <table class="history-table">
         <thead>
           <tr>
@@ -58,26 +58,26 @@
           {{#if transactions}}
             {{#each transactions}}
               <tr data-type="{{type}}">
-                <td>
+                <td data-label="Thời gian">
                   <div class="history-datetime">{{datetime}}</div>
                   <small class="history-time">{{time}}</small>
                 </td>
-                <td>
+                <td data-label="Trạng thái">
                   {{#if isBuy}}
                     <span class="history-type-buy">Mua</span>
                   {{else}}
                     <span class="history-type-sell">Bán</span>
                   {{/if}}
                 </td>
-                <td>
+                <td data-label="Coin">
                   <div class="crypto-name">
                     <div class="crypto-icon">{{symbol}}</div>
                     <span>{{symbol}}</span>
                   </div>
                 </td>
-                <td>{{amount}}</td>
-                <td>${{price}}</td>
-                <td><strong>${{total}}</strong></td>
+                <td data-label="Số lượng">{{amount}}</td>
+                <td data-label="Giá">${{price}}</td>
+                <td data-label="Tổng giá trị"><strong>${{total}}</strong></td>
               </tr>
             {{/each}}
           {{else}}
@@ -89,6 +89,61 @@
           {{/if}}
         </tbody>
       </table>
+    </div>
+
+    <!-- Mobile Card View -->
+    <div class="history-cards-wrapper history-mobile-view">
+      <div class="history-cards-grid">
+        {{#if transactions}}
+          {{#each transactions}}
+            <div class="history-card" data-type="{{type}}">
+              <div class="history-card-header">
+                <div class="crypto-name">
+                  <div class="crypto-icon">{{symbol}}</div>
+                  <div>
+                    <div class="card-name">{{symbol}}</div>
+                    {{#if isBuy}}
+                      <span class="history-type-buy">Mua</span>
+                    {{else}}
+                      <span class="history-type-sell">Bán</span>
+                    {{/if}}
+                  </div>
+                </div>
+              </div>
+              <div class="history-card-body">
+                <div class="card-row">
+                  <span class="card-label">Thời gian:</span>
+                  <span class="card-value">{{datetime}} {{time}}</span>
+                </div>
+                <div class="card-row">
+                  <span class="card-label">Số lượng:</span>
+                  <span class="card-value">{{amount}}</span>
+                </div>
+                <div class="card-row">
+                  <span class="card-label">Giá:</span>
+                  <span class="card-value">${{price}}</span>
+                </div>
+                <div class="card-row">
+                  <span class="card-label">Tổng:</span>
+                  <span class="card-value"><strong>${{total}}</strong></span>
+                </div>
+              </div>
+            </div>
+          {{/each}}
+        {{else}}
+          <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">
+            Chưa có giao dịch nào
+          </div>
+        {{/if}}
+      </div>
+
+      {{#if transactions}}
+      <div class="history-pagination">
+        <button class="pagination-btn history-prev" style="display: none;">← Trang trước</button>
+        <span class="pagination-info">Trang <span class="page-current">1</span> / <span class="page-total">1</span></span>
+        <button class="pagination-btn history-next" style="display: none;">Trang tiếp theo →</button>
+      </div>
+      {{/if}}
     </div>
   </div>
 </div>

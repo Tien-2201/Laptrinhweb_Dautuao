@@ -13,7 +13,7 @@ function switchForm(formType) {
 
 function handleLogin(event) {
     event.preventDefault();
-    alert('Đăng nhập thành công!');
+    // Form submission handled by backend
 }
 
 function handleRegister(event) {
@@ -22,9 +22,8 @@ function handleRegister(event) {
     const confirmPassword = document.getElementById('confirmPassword').value;
 
     if (password !== confirmPassword) {
-        alert('Mật khẩu không khớp!');
+        showToast('Mật khẩu không khớp!', 'warn');
         return;
     }
-
-    alert('Đăng ký thành công!');
+    // Form submission handled by backend
 }

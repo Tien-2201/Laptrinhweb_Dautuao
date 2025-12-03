@@ -2,14 +2,9 @@
 const mobileMenu = document.querySelector('.mobile-menu');
 const nav = document.querySelector('nav');
 
-
 mobileMenu.addEventListener('click', () => {
     nav.classList.toggle('active');
 });
-function toggleMenu() {
-    const nav = document.querySelector('nav');
-    nav.classList.toggle('active');
-}
 
 // Đóng menu khi click vào link
 document.querySelectorAll('nav a').forEach(link => {

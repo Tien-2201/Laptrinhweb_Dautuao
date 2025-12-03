@@ -5,7 +5,8 @@
             <p>Theo dõi giá và biến động của các loại tiền điện tử hàng đầu</p>
         </div>
 
-        <div class="market-table-wrapper">
+        <!-- Desktop Table View -->
+        <div class="market-table-wrapper market-desktop-view">
             <table class="market-table">
                 <thead>
                     <tr>
@@ -18,89 +19,79 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr data-coin-id="bitcoin">
-                        <td>
+                    {{#each coins}}
+                    <tr data-coin-id="{{this.coin_id}}">
+                        <td data-label="Tên">
                             <div class="crypto-name">
-                                <div class="crypto-icon"><i class="fa-brands fa-bitcoin"></i></div>
+                                <div class="crypto-icon">{{this.symbol}}</div>
                                 <div>
-                                    <div>Bitcoin</div>
-                                    <small class="crypto-symbol">BTC</small>
+                                    <div>{{this.name}}</div>
+                                    <small class="crypto-symbol">{{this.symbol}}</small>
                                 </div>
                             </div>
                         </td>
-                        <td><strong>-</strong></td>
-                        <td data-change-24h>-</td>
-                        <td data-change-7d>-</td>
-                        <td>-</td>
-                        <td><a href="/trading?coin=BTC" class="btn-trade">Giao dịch</a></td>
+                        <td data-label="Giá"><strong>-</strong></td>
+                        <td data-label="24h" data-change-24h>-</td>
+                        <td data-label="7 ngày" data-change-7d>-</td>
+                        <td data-label="Vốn hóa">-</td>
+                        <td><a href="/trading?coin={{this.symbol}}" class="btn-trade">Giao dịch</a></td>
                     </tr>
-                    <tr data-coin-id="ethereum">
-                        <td>
-                            <div class="crypto-name">
-                                <div class="crypto-icon"><i class="fa-brands fa-ethereum"></i></div>
-                                <div>
-                                    <div>Ethereum</div>
-                                    <small class="crypto-symbol">ETH</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td><strong>-</strong></td>
-                        <td data-change-24h>-</td>
-                        <td data-change-7d>-</td>
-                        <td>-</td>
-                        <td><a href="/trading?coin=ETH" class="btn-trade">Giao dịch</a></td>
-                    </tr>
-                    <tr data-coin-id="binancecoin">
-                        <td>
-                            <div class="crypto-name">
-                                <div class="crypto-icon">BNB</div>
-                                <div>
-                                    <div>Binancecoin</div>
-                                    <small class="crypto-symbol">BNB</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td><strong>-</strong></td>
-                        <td data-change-24h>-</td>
-                        <td data-change-7d>-</td>
-                        <td>-</td>
-                        <td><a href="/trading?coin=BNB" class="btn-trade">Giao dịch</a></td>
-                    </tr>
-                    <tr data-coin-id="solana">
-                        <td>
-                            <div class="crypto-name">
-                                <div class="crypto-icon">SOL</div>
-                                <div>
-                                    <div>Solana</div>
-                                    <small class="crypto-symbol">SOL</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td><strong>-</strong></td>
-                        <td data-change-24h>-</td>
-                        <td data-change-7d>-</td>
-                        <td>-</td>
-                        <td><a href="/trading?coin=SOL" class="btn-trade">Giao dịch</a></td>
-                    </tr>
-                    <tr data-coin-id="ripple">
-                        <td>
-                            <div class="crypto-name">
-                                <div class="crypto-icon">XRP</div>
-                                <div>
-                                    <div>Ripple</div>
-                                    <small class="crypto-symbol">XRP</small>
-                                </div>
-                            </div>
-                        </td>
-                        <td><strong>-</strong></td>
-                        <td data-change-24h>-</td>
-                        <td data-change-7d>-</td>
-                        <td>-</td>
-                        <td><a href="/trading?coin=XRP" class="btn-trade">Giao dịch</a></td>
-                    </tr>
+                    {{/each}}
                 </tbody>
             </table>
         </div>
+
+        <!-- Mobile Card View -->
+        <div class="market-cards-wrapper market-mobile-view">
+            <div class="market-cards-grid">
+                {{#each coins}}
+                <div class="market-card" data-coin-id="{{this.coin_id}}">
+                    <div class="market-card-header">
+                        <div class="crypto-name">
+                            <div class="crypto-icon">{{this.symbol}}</div>
+                            <div>
+                                <div class="card-name">{{this.name}}</div>
+                                <small class="crypto-symbol">{{this.symbol}}</small>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="market-card-body">
+                        <div class="card-row">
+                            <span class="card-label">Giá:</span>
+                            <span class="card-value price-value"><strong>-</strong></span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">24h:</span>
+                            <span class="card-value change-24h" data-change-24h>-</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">7 ngày:</span>
+                            <span class="card-value change-7d" data-change-7d>-</span>
+                        </div>
+                        <div class="card-row">
+                            <span class="card-label">Vốn hóa:</span>
+                            <span class="card-value marketcap-value">-</span>
+                        </div>
+                    </div>
+                    <div class="market-card-footer">
+                        <a href="/trading?coin={{this.symbol}}" class="btn-trade btn-trade-card">Giao dịch</a>
+                    </div>
+                </div>
+                {{/each}}
+            </div>
+        </div>
+
+        {{#if pagination.mobile}}
+        <div class="market-pagination">
+            {{#if pagination.hasPrev}}
+            <a href="/market?page={{pagination.prevPage}}" class="pagination-btn">← Trang trước</a>
+            {{/if}}
+            <span class="pagination-info">Trang {{pagination.currentPage}} / {{pagination.totalPages}}</span>
+            {{#if pagination.hasNext}}
+            <a href="/market?page={{pagination.nextPage}}" class="pagination-btn">Trang tiếp theo →</a>
+            {{/if}}
+        </div>
+        {{/if}}
     </div>
 </div>
 

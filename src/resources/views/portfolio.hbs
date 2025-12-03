@@ -14,7 +14,7 @@
             <div class="portfolio-stat-card">
                 <h4>Lợi nhuận/Lỗ</h4>
                 <div class="stat-value {{#if totals.isPnlPositive}}text-positive{{else if totals.isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if totals.pnl}}{{#if totals.isPnlPositive}}+{{/if}}${{totals.pnl}}{{else}}$0.00{{/if}}</div>
-                <div class="stat-change {{#if totals.isPnlPositive}}text-positive{{else if totals.isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">0.00%</div>
+                <div class="stat-change {{#if totals.isPnlPositive}}text-positive{{else if totals.isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if totals.pnlPercentage}}{{#if totals.isPnlPositive}}+{{/if}}{{totals.pnlPercentage}}%{{else}}0.00%{{/if}}</div>
             </div>
             <div class="portfolio-stat-card">
                 <h4>Số dư khả dụng</h4>
@@ -23,7 +23,7 @@
             </div>
         </div>
 
-        <div class="portfolio-table-wrapper">
+        <div class="portfolio-table-wrapper portfolio-desktop-view">
             <table class="portfolio-table">
                 <thead>
                     <tr>
@@ -40,7 +40,7 @@
                     {{#if holdings}}
                         {{#each holdings}}
                             <tr>
-                                <td>
+                                <td data-label="Tài sản">
                                     <div class="crypto-name">
                                         <div>
                                             <div>{{coin}}</div>
@@ -48,11 +48,11 @@
                                         </div>
                                     </div>
                                 </td>
-                                <td>{{qty}}</td>
-                                <td>${{buyPrice}}</td>
-                                <td>{{#if currentPrice}}${{currentPrice}}{{else}}-{{/if}}</td>
-                                <td><strong>{{#if marketValue}}${{marketValue}}{{else}}-{{/if}}</strong></td>
-                                <td class="{{#if isPnlPositive}}text-positive{{else if isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if pnl}}{{#if isPnlPositive}}+{{/if}}${{pnl}}{{else}}-{{/if}}</td>
+                                <td data-label="Số lượng">{{qty}}</td>
+                                <td data-label="Giá mua">${{buyPrice}}</td>
+                                <td data-label="Giá hiện tại">{{#if currentPrice}}${{currentPrice}}{{else}}-{{/if}}</td>
+                                <td data-label="Tổng giá trị"><strong>{{#if marketValue}}${{marketValue}}{{else}}-{{/if}}</strong></td>
+                                <td data-label="Lãi/Lỗ" class="{{#if isPnlPositive}}text-positive{{else if isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if pnl}}{{#if isPnlPositive}}+{{/if}}${{pnl}}{{else}}-{{/if}}</td>
                                 <td><a href="/trading?coin={{symbol}}" class="btn-trade">Bán</a></td>
                             </tr>
                         {{/each}}
@@ -64,9 +64,67 @@
                 </tbody>
             </table>
         </div>
+
+        <!-- Mobile Card View -->
+        <div class="portfolio-cards-wrapper portfolio-mobile-view">
+            <div class="portfolio-cards-grid">
+                {{#if holdings}}
+                    {{#each holdings}}
+                        <div class="portfolio-card">
+                            <div class="portfolio-card-header">
+                                <div class="crypto-name">
+                                    <div>
+                                        <div class="card-name">{{coin}}</div>
+                                        <small class="crypto-symbol">{{symbol}}</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="portfolio-card-body">
+                                <div class="card-row">
+                                    <span class="card-label">Số lượng:</span>
+                                    <span class="card-value">{{qty}}</span>
+                                </div>
+                                <div class="card-row">
+                                    <span class="card-label">Giá mua:</span>
+                                    <span class="card-value">${{buyPrice}}</span>
+                                </div>
+                                <div class="card-row">
+                                    <span class="card-label">Giá hiện tại:</span>
+                                    <span class="card-value">{{#if currentPrice}}${{currentPrice}}{{else}}-{{/if}}</span>
+                                </div>
+                                <div class="card-row">
+                                    <span class="card-label">Tổng giá trị:</span>
+                                    <span class="card-value"><strong>{{#if marketValue}}${{marketValue}}{{else}}-{{/if}}</strong></span>
+                                </div>
+                                <div class="card-row">
+                                    <span class="card-label">Lãi/Lỗ:</span>
+                                    <span class="card-value {{#if isPnlPositive}}text-positive{{else if isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if pnl}}{{#if isPnlPositive}}+{{/if}}${{pnl}}{{else}}-{{/if}}</span>
+                                </div>
+                            </div>
+                            <div class="portfolio-card-footer">
+                                <a href="/trading?coin={{symbol}}" class="btn-trade btn-trade-card">Bán</a>
+                            </div>
+                        </div>
+                    {{/each}}
+                {{else}}
+                    <div style="grid-column: 1/-1; text-align: center; padding: 2rem; color: #888;">
+                        Không có tài sản trong danh mục.
+                    </div>
+                {{/if}}
+            </div>
+
+            {{#if holdings}}
+            <div class="portfolio-pagination">
+                <button class="pagination-btn portfolio-prev" style="display: none;">← Trang trước</button>
+                <span class="pagination-info">Trang <span class="page-current">1</span> / <span class="page-total">1</span></span>
+                <button class="pagination-btn portfolio-next" style="display: none;">Trang tiếp theo →</button>
+            </div>
+            {{/if}}
+        </div>
     </div>
 </div>
 
 {{#section "script"}}
   <script src="/js/mainweb.js"></script>
+  <script src="/js/portfolio.js"></script>
 {{/section}}

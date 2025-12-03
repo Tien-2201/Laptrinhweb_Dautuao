@@ -1,13 +1,38 @@
 
-const COIN_ID_MAP = { BTC: 'bitcoin', ETH: 'ethereum', BNB: 'binancecoin', SOL: 'solana', XRP: 'ripple' };
+let COIN_ID_MAP = {}; // symbol -> coin_key (coin_id string used by CoinGecko)
+let EXTERNAL_CHART = {}; // symbol -> external chart info
 
-const EXTERNAL_CHART = {
-  BTC: { url: 'https://www.tradingview.com/symbols/BTCUSD/', text: 'Xem chi tiết trên TradingView' },
-  ETH: { url: 'https://www.tradingview.com/symbols/ETHUSD/', text: 'Xem chi tiết trên TradingView' },
-  BNB: { url: 'https://www.tradingview.com/symbols/BNBUSD/', text: 'Xem chi tiết trên TradingView' },
-  SOL: { url: 'https://www.tradingview.com/symbols/SOLUSD/', text: 'Xem chi tiết trên TradingView' },
-  XRP: { url: 'https://www.tradingview.com/symbols/XRPUSD/', text: 'Xem chi tiết trên TradingView' }
-};
+async function loadCoinList() {
+  try {
+    const res = await fetch('/market/coins');
+    if (!res.ok) throw new Error('Failed to load coins');
+    const j = await res.json();
+    const coins = j.coins || [];
+    // build symbol->coin_key map
+    COIN_ID_MAP = {};
+    EXTERNAL_CHART = {};
+    const sel = document.getElementById('tradingCoinSelect');
+    coins.forEach(c => {
+      if (c && c.symbol && c.coin_id) {
+        const sym = (c.symbol || '').toUpperCase();
+        COIN_ID_MAP[sym] = c.coin_id;
+        EXTERNAL_CHART[sym] = { url: `https://www.tradingview.com/symbols/${sym}USD/`, text: 'Xem chi tiết trên TradingView' };
+        // populate select if option for symbol not present
+        if (sel) {
+          const exists = Array.from(sel.options).some(o => (o.value || '').toUpperCase() === sym);
+          if (!exists) {
+            const opt = document.createElement('option');
+            opt.value = sym;
+            opt.text = `${sym}`;
+            sel.appendChild(opt);
+          }
+        }
+      }
+    });
+  } catch (e) {
+    console.error('loadCoinList error', e);
+  }
+}
 
 
 let pricePollHandle = null;
@@ -19,29 +44,29 @@ document.addEventListener('DOMContentLoaded', () => {
   const sel = document.getElementById('tradingCoinSelect');
   if (coinParam && sel) sel.value = coinParam;
   if (sel) sel.addEventListener('change', onCoinChange);
-  // initial update
-  updateExternalChart();
 
-  // 
+  loadCoinList().then(() => updateExternalChart());
+  setInterval(() => loadCoinList(), 60 * 1000);
+
   loadPortfolio();
-
-  // set immediate price from server cache (if available) then start polling
-  (async () => {
-    const sel = document.getElementById('tradingCoinSelect');
-    const coin = sel ? sel.value : 'BTC';
-    const id = COIN_ID_MAP[coin] || COIN_ID_MAP['BTC'];
-    try {
-      const p = await fetchPriceFromCache(id);
-      if (p != null) {
-        const priceInput = document.getElementById('tradingPrice');
-        if (priceInput) priceInput.value = p;
-      }
-    } catch (e) {
-      console.debug('[trading.js] fetchPriceFromCache initial error', e);
-    }
-    startPricePolling();
-  })();
+  initializePrice();
 });
+
+async function initializePrice() {
+  const sel = document.getElementById('tradingCoinSelect');
+  const coin = sel ? sel.value : 'BTC';
+  const id = COIN_ID_MAP[coin] || Object.values(COIN_ID_MAP)[0] || 'bitcoin';
+  try {
+    const p = await fetchPriceFromCache(id);
+    if (p != null) {
+      const priceInput = document.getElementById('tradingPrice');
+      if (priceInput) priceInput.value = p;
+    }
+  } catch (e) {
+    // Silently ignore cache fetch errors
+  }
+  startPricePolling();
+}
 
 async function loadPortfolio() {
   try {
@@ -49,45 +74,43 @@ async function loadPortfolio() {
     if (!res.ok) throw new Error('Failed to load portfolio');
     const data = await res.json();
 
-    // Hiển thị số dư USD
     const balanceEl = document.getElementById('usdBalance');
     if (balanceEl) balanceEl.textContent = data.balance.toFixed(2) + " USD";
 
-    // Hiển thị số coin
     const coinListEl = document.getElementById('coinHoldings');
     if (coinListEl) {
       coinListEl.innerHTML = '';
       data.holdings.forEach(row => {
         const li = document.createElement('li');
-        li.textContent = `${row.coin_id.toUpperCase()}: ${row.holding}`;
+        const label = row.symbol || row.coin || row.coin_id || '';
+        li.textContent = `${label.toUpperCase()}: ${row.holding}`;
         coinListEl.appendChild(li);
       });
     }
-
   } catch (err) {
     console.error('loadPortfolio error:', err);
   }
 }
 
-
 function onCoinChange() {
   updateExternalChart();
-  // immediately set price from server cache when switching coin (fast fallback), then fetch live price
-  (async () => {
-    const sel = document.getElementById('tradingCoinSelect');
-    const coin = sel ? sel.value : 'BTC';
-    const id = COIN_ID_MAP[coin] || COIN_ID_MAP['BTC'];
-    try {
-      const p = await fetchPriceFromCache(id);
-      if (p != null) {
-        const priceInput = document.getElementById('tradingPrice');
-        if (priceInput) priceInput.value = p;
-      }
-    } catch (e) {
-      console.debug('[trading.js] fetchPriceFromCache error', e);
+  updateCoinPrice();
+}
+
+async function updateCoinPrice() {
+  const sel = document.getElementById('tradingCoinSelect');
+  const coin = sel ? sel.value : 'BTC';
+  const id = COIN_ID_MAP[coin] || Object.values(COIN_ID_MAP)[0] || 'bitcoin';
+  try {
+    const p = await fetchPriceFromCache(id);
+    if (p != null) {
+      const priceInput = document.getElementById('tradingPrice');
+      if (priceInput) priceInput.value = p;
     }
-    fetchAndUpdatePrice();
-  })();
+  } catch (e) {
+    // Silently ignore cache fetch errors
+  }
+  fetchAndUpdatePrice();
 }
 
 async function fetchPriceFromCache(id) {
@@ -127,7 +150,7 @@ async function fetchAndUpdatePrice() {
   try {
     const sel = document.getElementById('tradingCoinSelect');
     const coin = sel ? sel.value : 'BTC';
-    const id = COIN_ID_MAP[coin] || COIN_ID_MAP['BTC'];
+    const id = COIN_ID_MAP[coin] || Object.values(COIN_ID_MAP)[0] || 'bitcoin';
     const res = await fetch(`/api/trading/price?coin=${encodeURIComponent(id)}`);
     if (!res.ok) throw new Error('price api ' + res.status);
     const json = await res.json();
@@ -158,7 +181,7 @@ async function executeTradingAction(type) {
   const total = parseFloat(document.getElementById('tradingTotal').value);
 
   if (!amount || amount <= 0 || !price || price <= 0) {
-    alert('Vui lòng nhập số lượng hợp lệ!');
+    showToast('Vui lòng nhập số lượng hợp lệ!', 'warn');
     return;
   }
 
@@ -174,7 +197,7 @@ async function executeTradingAction(type) {
     const result = await response.json();
 
     if (response.ok && result.success) {
-      alert(result.message);
+      showToast(result.message, 'success');
       document.getElementById('tradingAmount').value = '';
       document.getElementById('tradingTotal').value = '';
 
@@ -182,10 +205,10 @@ async function executeTradingAction(type) {
         await loadPortfolio();
       }
     } else {
-      alert(result.error || 'Lỗi không xác định');
+      showToast(result.error || 'Lỗi không xác định', 'error');
     }
   } catch (error) {
     console.error('Trading error:', error);
-    alert('Lỗi kết nối mạng');
+    showToast('Lỗi kết nối mạng', 'error');
   }
 }

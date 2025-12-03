@@ -11,7 +11,7 @@ class LoginCTL {
     login(req, res) {
         const { email, password } = req.body;
 
-        console.log('[LoginCTL] Thử đăng nhập với:', { email });
+
 
         // Lấy user theo email, sau đó so sánh password bằng bcrypt
         const sql = 'SELECT * FROM users WHERE email = ?';
@@ -36,12 +36,15 @@ class LoginCTL {
                 }
 
                 if (same) {
-                    req.session.user = user;
+                    // Không lưu mật khẩu (hash) vào session
+                    const safeUser = { ...user };
+                    if (safeUser.password) delete safeUser.password;
+                    req.session.user = safeUser;
                     // Initialize in-session USD balance if not present (default 10000)
                     if (!req.session.balance && req.session.balance !== 0) {
                         req.session.balance = 10000;
                     }
-                    console.log('[LoginCTL] Đăng nhập thành công:', user.email);
+
                     return res.redirect('/home');
                 }
 
@@ -53,7 +56,7 @@ class LoginCTL {
     register(req, res) {
         const { fullname, email, password, confirmPassword } = req.body;
 
-        console.log(">>> BODY NHẬN TỪ FORM:", req.body);
+
 
         if (!fullname || !email || !password || !confirmPassword) {
             return res.render('login', { layout: 'login', error: 'Vui lòng điền đầy đủ thông tin đăng ký.' });
@@ -88,13 +91,16 @@ class LoginCTL {
                         return res.render('login', { layout: 'login', error: 'Lỗi server, vui lòng thử lại sau.' });
                     }
 
-                    console.log('[LoginCTL.register] Đăng ký thành công ID:', insRes.insertId);
+
                     // Sau khi đăng ký thành công — tự động đăng nhập
                     db.query('SELECT * FROM users WHERE id = ?', [insRes.insertId], (qErr, rows) => {
                         if (qErr || !rows || rows.length === 0) {
                             return res.render('login', { layout: 'login',  error: 'Đăng ký thành công. Vui lòng đăng nhập.' });
                         }
-                        req.session.user = rows[0];
+                        // Không lưu mật khẩu băm vào session
+                        const newUser = { ...rows[0] };
+                        if (newUser.password) delete newUser.password;
+                        req.session.user = newUser;
                         if (!req.session.balance && req.session.balance !== 0) {
                             req.session.balance = 10000;
                         }

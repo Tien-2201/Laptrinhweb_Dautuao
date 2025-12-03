@@ -6,13 +6,16 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-const COIN_ID_MAP = { 
-  BTC: 'bitcoin', 
-  ETH: 'ethereum', 
-  BNB: 'binancecoin', 
-  SOL: 'solana', 
-  XRP: 'ripple' 
-};
+// Helper: tìm coin trong bảng `coins` theo symbol hoặc coin_id (vd: 'BTC' hoặc 'bitcoin')
+function findCoin(key, cb) {
+  if (!key) return cb(null, null);
+  const k = String(key).trim();
+  db.query('SELECT id, coin_id, symbol, name FROM coins WHERE LOWER(symbol) = LOWER(?) OR LOWER(coin_id) = LOWER(?) LIMIT 1', [k, k], (err, rows) => {
+    if (err) return cb(err);
+    if (!rows || rows.length === 0) return cb(null, null);
+    cb(null, rows[0]);
+  });
+}
 
 // GET /api/trading/ohlc?coin=bitcoin&days=1
 router.get('/ohlc', (req, res) => {
@@ -128,84 +131,92 @@ router.get('/price', (req, res) => {
 
 // POST /api/trading/buy - SỬA ĐỂ DÙNG DATABASE
 router.post('/buy', auth.ensureAuth, (req, res) => {
-  const { coin, amount, price } = req.body;
+  const { coin } = req.body;
+  const amount = parseFloat(req.body.amount);
+  const price = parseFloat(req.body.price);
   const user = req.session.user;
-  
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
   // Validate input
-  if (!coin || !amount || !price || amount <= 0 || price <= 0) {
+  if (!coin || !Number.isFinite(amount) || !Number.isFinite(price) || amount <= 0 || price <= 0) {
     return res.status(400).json({ error: 'Thông tin giao dịch không hợp lệ' });
   }
 
   const totalCost = amount * price;
 
-  // LẤY SỐ DƯ TỪ DATABASE
-  db.query('SELECT balance FROM wallets WHERE user_id = ?', [user.id], (errWallet, walletRows) => {
-    if (errWallet) {
-      console.error('[tradingApi] Buy wallet error:', errWallet);
+  // First find coin row in DB
+  findCoin(coin, (errFind, coinRow) => {
+    if (errFind) {
+      console.error('[tradingApi] Find coin error:', errFind);
       return res.status(500).json({ error: 'Database error' });
     }
 
-    if (!walletRows || walletRows.length === 0) {
-      return res.status(400).json({ error: 'Không tìm thấy ví. Vui lòng đăng nhập lại.' });
-    }
+    if (!coinRow) return res.status(400).json({ error: 'Coin không tồn tại trong hệ thống' });
 
-    const currentBalance = Number(walletRows[0].balance) || 0;
+    const coinDbId = coinRow.id; // integer FK
+    const symbol = coinRow.symbol || coin;
 
-    // Kiểm tra số dư
-    if (currentBalance < totalCost) {
-      return res.status(400).json({ 
-        error: `Không đủ tiền! Cần $${totalCost.toFixed(2)}, có $${currentBalance.toFixed(2)}` 
-      });
-    }
-
-    const coinId = COIN_ID_MAP[coin] || coin.toLowerCase();
-    const symbol = coin;
-
-    // Bắt đầu transaction
-    db.query('START TRANSACTION', (errStart) => {
-      if (errStart) {
-        console.error('[tradingApi] Start transaction error:', errStart);
-        return res.status(500).json({ error: 'Database error' });
+    // Sử dụng kết nối từ pool để đảm bảo các lệnh trong transaction chạy trên cùng 1 connection
+    db.getConnection((errConn, conn) => {
+      if (errConn) {
+        console.error('[tradingApi] Get connection error:', errConn);
+        return res.status(500).json({ error: 'Database connection error' });
       }
 
-      // Insert giao dịch
-      const sqlInsert = 'INSERT INTO transactions (user_id, coin_id, symbol, type, amount, price) VALUES (?, ?, ?, ?, ?, ?)';
-      db.query(sqlInsert, [user.id, coinId, symbol, 'buy', amount, price], (errInsert) => {
-        if (errInsert) {
-          console.error('[tradingApi] Buy insert error:', errInsert);
-          db.query('ROLLBACK');
+      conn.beginTransaction(errBegin => {
+        if (errBegin) {
+          conn.release();
+          console.error('[tradingApi] Begin transaction error:', errBegin);
           return res.status(500).json({ error: 'Database error' });
         }
 
-        // Trừ tiền từ wallet
-        const sqlUpdate = 'UPDATE wallets SET balance = balance - ? WHERE user_id = ?';
-        db.query(sqlUpdate, [totalCost, user.id], (errUpdate) => {
-          if (errUpdate) {
-            console.error('[tradingApi] Buy update wallet error:', errUpdate);
-            db.query('ROLLBACK');
-            return res.status(500).json({ error: 'Database error' });
+        const selSql = 'SELECT balance FROM wallets WHERE user_id = ? FOR UPDATE';
+        conn.query(selSql, [user.id], (errWallet, walletRows) => {
+          if (errWallet) {
+            console.error('[tradingApi] Buy wallet error:', errWallet);
+            return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
           }
 
-          // Commit transaction
-          db.query('COMMIT', (errCommit) => {
-            if (errCommit) {
-              console.error('[tradingApi] Commit error:', errCommit);
-              db.query('ROLLBACK');
-              return res.status(500).json({ error: 'Database error' });
+          if (!walletRows || walletRows.length === 0) {
+            return conn.rollback(() => { conn.release(); res.status(400).json({ error: 'Không tìm thấy ví. Vui lòng đăng nhập lại.' }); });
+          }
+
+          const currentBalance = Number(walletRows[0].balance) || 0;
+          if (currentBalance < totalCost) {
+            return conn.rollback(() => { conn.release(); res.status(400).json({ error: `Không đủ tiền! Cần $${totalCost.toFixed(2)}, có $${currentBalance.toFixed(2)}` }); });
+          }
+
+          const sqlInsert = 'INSERT INTO transactions (user_id, coin_id, type, amount, price) VALUES (?, ?, ?, ?, ?)';
+          conn.query(sqlInsert, [user.id, coinDbId, 'buy', amount, price], (errInsert) => {
+            if (errInsert) {
+              console.error('[tradingApi] Buy insert error:', errInsert);
+              return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
             }
 
-            // Lấy số dư mới
-            db.query('SELECT balance FROM wallets WHERE user_id = ?', [user.id], (errBalance, balanceRows) => {
-              const newBalance = balanceRows && balanceRows[0] ? Number(balanceRows[0].balance) : currentBalance - totalCost;
+            const sqlUpdate = 'UPDATE wallets SET balance = balance - ? WHERE user_id = ?';
+            conn.query(sqlUpdate, [totalCost, user.id], (errUpdate) => {
+              if (errUpdate) {
+                console.error('[tradingApi] Buy update wallet error:', errUpdate);
+                return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
+              }
 
-              console.log(`[Trading] User ${user.id} bought ${amount} ${coin} at $${price}. New balance: $${newBalance}`);
+              conn.commit((errCommit) => {
+                if (errCommit) {
+                  console.error('[tradingApi] Commit error:', errCommit);
+                  return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
+                }
 
-              res.json({ 
-                success: true, 
-                message: `Mua thành công ${amount} ${coin} với giá $${totalCost.toFixed(2)}`,
-                balance: newBalance
+                // Lấy số dư mới
+                conn.query('SELECT balance FROM wallets WHERE user_id = ?', [user.id], (errBalance, balanceRows) => {
+                  const newBalance = balanceRows && balanceRows[0] ? Number(balanceRows[0].balance) : currentBalance - totalCost;
+                  console.log(`[Trading] User ${user.id} bought ${amount} ${coin} at $${price}. New balance: $${newBalance}`);
+                  conn.release();
+                  res.json({ 
+                    success: true, 
+                    message: `Mua thành công ${amount} ${coin} với giá $${totalCost.toFixed(2)}`,
+                    balance: newBalance
+                  });
+                });
               });
             });
           });
@@ -217,80 +228,85 @@ router.post('/buy', auth.ensureAuth, (req, res) => {
 
 // POST /api/trading/sell - SỬA ĐỂ DÙNG DATABASE
 router.post('/sell', auth.ensureAuth, (req, res) => {
-  const { coin, amount, price } = req.body;
+  const { coin } = req.body;
+  const amount = parseFloat(req.body.amount);
+  const price = parseFloat(req.body.price);
   const user = req.session.user;
-  
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
   // Validate input
-  if (!coin || !amount || !price || amount <= 0 || price <= 0) {
+  if (!coin || !Number.isFinite(amount) || !Number.isFinite(price) || amount <= 0 || price <= 0) {
     return res.status(400).json({ error: 'Thông tin giao dịch không hợp lệ' });
   }
 
-  const coinId = COIN_ID_MAP[coin] || coin.toLowerCase();
-  const symbol = coin;
+  const totalProceeds = amount * price;
 
-  // Kiểm tra số lượng coin đang có
-  const checkSql = 'SELECT SUM(CASE WHEN type = "buy" THEN amount ELSE -amount END) as holding FROM transactions WHERE user_id = ? AND coin_id = ?';
-  db.query(checkSql, [user.id, coinId], (errCheck, rows) => {
-    if (errCheck) {
-      console.error('[tradingApi] Sell check error:', errCheck);
+  // Find coin row
+  findCoin(coin, (errFind, coinRow) => {
+    if (errFind) {
+      console.error('[tradingApi] Find coin error:', errFind);
       return res.status(500).json({ error: 'Database error' });
     }
+    if (!coinRow) return res.status(400).json({ error: 'Coin không tồn tại' });
 
-    const holding = Number(rows[0]?.holding) || 0;
+    const coinDbId = coinRow.id;
+    const symbol = coinRow.symbol || coin;
 
-    if (holding < amount) {
-      return res.status(400).json({ 
-        error: `Không đủ ${coin} để bán! Có ${holding.toFixed(8)}, muốn bán ${amount}` 
-      });
-    }
-
-    const totalProceeds = amount * price;
-
-    // Bắt đầu transaction
-    db.query('START TRANSACTION', (errStart) => {
-      if (errStart) {
-        console.error('[tradingApi] Start transaction error:', errStart);
-        return res.status(500).json({ error: 'Database error' });
+    db.getConnection((errConn, conn) => {
+      if (errConn) {
+        console.error('[tradingApi] Get connection error:', errConn);
+        return res.status(500).json({ error: 'Database connection error' });
       }
 
-      // Insert giao dịch
-      const sqlInsert = 'INSERT INTO transactions (user_id, coin_id, symbol, type, amount, price) VALUES (?, ?, ?, ?, ?, ?)';
-      db.query(sqlInsert, [user.id, coinId, symbol, 'sell', amount, price], (errInsert) => {
-        if (errInsert) {
-          console.error('[tradingApi] Sell insert error:', errInsert);
-          db.query('ROLLBACK');
+      conn.beginTransaction(errBegin => {
+        if (errBegin) {
+          conn.release();
+          console.error('[tradingApi] Begin transaction error:', errBegin);
           return res.status(500).json({ error: 'Database error' });
         }
 
-        // Cộng tiền vào wallet
-        const sqlUpdate = 'UPDATE wallets SET balance = balance + ? WHERE user_id = ?';
-        db.query(sqlUpdate, [totalProceeds, user.id], (errUpdate) => {
-          if (errUpdate) {
-            console.error('[tradingApi] Sell update wallet error:', errUpdate);
-            db.query('ROLLBACK');
-            return res.status(500).json({ error: 'Database error' });
+        const checkSql = 'SELECT SUM(CASE WHEN type = "buy" THEN amount ELSE -amount END) as holding FROM transactions WHERE user_id = ? AND coin_id = ?';
+        conn.query(checkSql, [user.id, coinDbId], (errCheck, rows) => {
+          if (errCheck) {
+            console.error('[tradingApi] Sell check error:', errCheck);
+            return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
           }
 
-          // Commit transaction
-          db.query('COMMIT', (errCommit) => {
-            if (errCommit) {
-              console.error('[tradingApi] Commit error:', errCommit);
-              db.query('ROLLBACK');
-              return res.status(500).json({ error: 'Database error' });
+          const holding = Number(rows[0]?.holding) || 0;
+          if (holding < amount) {
+            return conn.rollback(() => { conn.release(); res.status(400).json({ error: `Không đủ ${coin} để bán! Có ${holding.toFixed(8)}, muốn bán ${amount}` }); });
+          }
+
+          const sqlInsert = 'INSERT INTO transactions (user_id, coin_id, type, amount, price) VALUES (?, ?, ?, ?, ?)';
+          conn.query(sqlInsert, [user.id, coinDbId, 'sell', amount, price], (errInsert) => {
+            if (errInsert) {
+              console.error('[tradingApi] Sell insert error:', errInsert);
+              return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
             }
 
-            // Lấy số dư mới
-            db.query('SELECT balance FROM wallets WHERE user_id = ?', [user.id], (errBalance, balanceRows) => {
-              const newBalance = balanceRows && balanceRows[0] ? Number(balanceRows[0].balance) : 0;
+            const sqlUpdate = 'UPDATE wallets SET balance = balance + ? WHERE user_id = ?';
+            conn.query(sqlUpdate, [totalProceeds, user.id], (errUpdate) => {
+              if (errUpdate) {
+                console.error('[tradingApi] Sell update wallet error:', errUpdate);
+                return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
+              }
 
-              console.log(`[Trading] User ${user.id} sold ${amount} ${coin} at $${price}. New balance: $${newBalance}`);
+              conn.commit((errCommit) => {
+                if (errCommit) {
+                  console.error('[tradingApi] Commit error:', errCommit);
+                  return conn.rollback(() => { conn.release(); res.status(500).json({ error: 'Database error' }); });
+                }
 
-              res.json({ 
-                success: true, 
-                message: `Bán thành công ${amount} ${coin} với giá $${totalProceeds.toFixed(2)}`,
-                balance: newBalance
+                conn.query('SELECT balance FROM wallets WHERE user_id = ?', [user.id], (errBalance, balanceRows) => {
+                  const newBalance = balanceRows && balanceRows[0] ? Number(balanceRows[0].balance) : 0;
+                  console.log(`[Trading] User ${user.id} sold ${amount} ${coin} at $${price}. New balance: $${newBalance}`);
+                  conn.release();
+                  res.json({ 
+                    success: true, 
+                    message: `Bán thành công ${amount} ${coin} với giá $${totalProceeds.toFixed(2)}`,
+                    balance: newBalance
+                  });
+                });
               });
             });
           });
@@ -303,7 +319,6 @@ router.post('/sell', auth.ensureAuth, (req, res) => {
 // GET /api/trading/portfolio
 router.get('/portfolio', auth.ensureAuth, (req, res) => {
   const user = req.session.user;
-  
   if (!user) return res.status(401).json({ error: 'Unauthorized' });
 
   // Lấy số dư từ database
@@ -315,14 +330,13 @@ router.get('/portfolio', auth.ensureAuth, (req, res) => {
 
     const balance = walletRows && walletRows[0] ? Number(walletRows[0].balance) : 0;
 
-    // Lấy holdings
+    // Lấy holdings, join với coins để có symbol/coin_id
     const sql = `
-      SELECT coin_id,
-             symbol,
-             SUM(CASE WHEN type = 'buy' THEN amount ELSE -amount END) AS holding
-      FROM transactions
-      WHERE user_id = ?
-      GROUP BY coin_id, symbol
+      SELECT c.coin_id as coin_key, c.symbol, SUM(CASE WHEN t.type = 'buy' THEN t.amount ELSE -t.amount END) AS holding
+      FROM transactions t
+      JOIN coins c ON t.coin_id = c.id
+      WHERE t.user_id = ?
+      GROUP BY t.coin_id, c.symbol, c.coin_id
       HAVING holding > 0
     `;
 
@@ -332,10 +346,10 @@ router.get('/portfolio', auth.ensureAuth, (req, res) => {
         return res.status(500).json({ error: 'Database error' });
       }
 
-      res.json({
-        balance: balance,
-        holdings: rows
-      });
+      // format
+      const holdings = (rows || []).map(r => ({ coin: r.coin_key, symbol: r.symbol, holding: Number(r.holding) }));
+
+      res.json({ balance: balance, holdings });
     });
   });
 });

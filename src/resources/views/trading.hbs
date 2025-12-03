@@ -8,7 +8,6 @@
         <div class="trading-panel">
             <div class="trading-chart-wrapper">
                 <div id="externalChartAnchor" class="external-chart-anchor">
-                    <!-- You can replace the inner content with an <img> or iframe later. -->
                     <a id="externalChartLink" class="external-chart-link" href="https://www.tradingview.com/symbols/BTCUSD/" target="_blank" rel="noopener noreferrer">
                         <img id="externalChartImage" class="external-chart-image" src="/img/chart-candle.webp" alt="Ảnh biểu đồ nến">
                     </a>
@@ -32,12 +31,10 @@
 
                     <div class="trading-form-group">
                         <label>Chọn coin</label>
-                        <select id="tradingCoinSelect" class="trading-select" onchange="onCoinChange()">
-                            <option value="BTC">Bitcoin (BTC)</option>
-                            <option value="ETH">Ethereum (ETH)</option>
-                            <option value="BNB">Binancecoin (BNB)</option>
-                            <option value="SOL">Solana (SOL)</option>
-                            <option value="XRP">Ripple (XRP)</option>
+                        <select id="tradingCoinSelect" class="trading-select">
+                            {{#each coins}}
+                                <option value="{{this.symbol}}">{{this.name}} ({{this.symbol}})</option>
+                            {{/each}}
                         </select>
                     </div>
 
