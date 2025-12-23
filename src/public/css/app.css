@@ -750,7 +750,7 @@ nav a:hover::after {
 }
 
 .portfolio-table th {
-  background: #E8F4F8;
+  background: #afebff;
   padding: 16px;
   text-align: left;
   color: #5A4A3A;
@@ -963,16 +963,6 @@ nav a:hover::after {
   margin-bottom: 12px;
 }
 
-.history-pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 16px;
-  padding: 16px;
-  background: white;
-  border-radius: 10px;
-}
-
 .portfolio-table td {
   padding: 16px;
   border-bottom: 1px solid #f0f0f0;
@@ -1173,38 +1163,6 @@ nav a:hover::after {
   margin-bottom: 8px;
 }
 
-.holdings-list {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-}
-
-.holding-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px;
-  background: #f9fafb;
-  border-radius: 8px;
-}
-
-.holding-symbol {
-  font-weight: bold;
-  color: #5A4A3A;
-  min-width: 60px;
-}
-
-.holding-amount {
-  font-size: 14px;
-  color: #4b5563;
-  flex: 1;
-}
-
-.holding-price {
-  font-size: 12px;
-  color: #9ca3af;
-}
-
 .no-data {
   color: #9ca3af;
   font-style: italic;
@@ -1274,6 +1232,33 @@ nav a:hover::after {
   font-weight: 600;
 }
 
+/* Assets in History Summary */
+.asset-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+}
+
+.asset-symbol {
+  font-weight: bold;
+  color: #5A4A3A;
+  min-width: 60px;
+}
+
+.asset-amount {
+  font-size: 14px;
+  color: #4b5563;
+  flex: 1;
+}
+
+.asset-price {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
 .history-table-wrapper {
   width: 100%;
   overflow-x: auto;
@@ -1287,12 +1272,12 @@ nav a:hover::after {
 }
 
 .history-table thead tr th {
-  background: #f3f4f6;
+  background: #afebff;
   padding: 12px 16px;
   text-align: left;
   font-weight: 600;
   font-size: 14px;
-  color: #6b7280;
+  color: #5A4A3A;
   text-transform: uppercase;
 }
 
@@ -1340,51 +1325,128 @@ nav a:hover::after {
 /* ============================================
    PROFILE PAGE
    ============================================ */
-.profile-auth-box {
-  background: #fff;
+.profile-page {
+  min-height: calc(100vh - 200px);
+}
+
+.profile-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-bottom: 32px;
+}
+
+.profile-card {
+  background: white;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
   padding: 24px;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
 }
 
-.profile-auth-box h3 {
-  margin-bottom: 16px;
-  font-size: 20px;
+.profile-card h3 {
   color: #5A4A3A;
+  font-size: 18px;
+  margin: 0 0 20px 0;
+  font-weight: 600;
+  border-bottom: 2px solid #afebff;
+  padding-bottom: 12px;
 }
 
-.profile-auth-box p {
-  margin: 8px 0;
-  font-size: 16px;
-  color: #333;
-}
-
-.profile-auth-box ul {
-  list-style: none;
-  padding-left: 0;
-  margin: 8px 0;
-}
-
-.profile-auth-box li {
-  padding: 8px 0;
+.profile-info-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 0;
   border-bottom: 1px solid #f0f0f0;
-  color: #4b5563;
 }
 
-.profile-login-btn {
+.profile-info-item:last-child {
+  border-bottom: none;
+}
+
+.profile-info-item label {
+  color: #6b7280;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.profile-info-item span {
+  color: #111827;
+  font-weight: 500;
+  font-size: 15px;
+}
+
+.balance-value {
+  color: #22c55e;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.holdings-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.holding-item {
+  background: #f9fafb;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  padding: 12px;
+  text-align: center;
+  transition: all 0.3s ease;
+}
+
+.holding-item:hover {
+  background: #f0f9ff;
+  border-color: #afebff;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.holding-symbol {
+  display: block;
+  color: #5A4A3A;
+  font-weight: 600;
+  font-size: 16px;
+  margin-bottom: 6px;
+}
+
+.holding-amount {
+  display: block;
+  color: #6b7280;
+  font-size: 14px;
+}
+
+.no-holdings {
+  text-align: center;
+  color: #9ca3af;
+  font-size: 14px;
+  padding: 16px 0;
+}
+
+.profile-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.logout-btn {
   display: inline-block;
-  background-color: #C17642;
+  padding: 12px 32px;
+  background-color: #ef4444;
   color: white;
-  padding: 12px 24px;
   border-radius: 8px;
   text-decoration: none;
   font-weight: 600;
-  transition: all 0.2s;
+  transition: all 0.3s;
+  font-size: 15px;
 }
 
-.profile-login-btn:hover {
-  background-color: #a85e2e;
+.logout-btn:hover {
+  background-color: #dc2626;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 /* ============================================
@@ -1808,26 +1870,51 @@ nav a:hover::after {
   .history-page .history-table tr:nth-child(n+4) {
     display: none;
   }
-  .profile-auth-box {
+  /* Profile page responsive */
+  .profile-cards {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+  .profile-card {
     padding: 16px;
+  }
+  .profile-card h3 {
+    font-size: 16px;
+    margin-bottom: 16px;
+  }
+  .profile-info-item {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 10px 0;
+  }
+  .profile-info-item label {
+    margin-bottom: 4px;
+    font-size: 13px;
+  }
+  .profile-info-item span {
+    font-size: 14px;
+  }
+  .holdings-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .holding-item {
+    padding: 10px;
+    font-size: 13px;
+  }
+  .holding-symbol {
+    font-size: 14px;
+  }
+  .logout-btn {
+    width: 100%;
+    text-align: center;
+    padding: 12px 16px;
   }
   .page-header h2 {
     font-size: 24px;
   }
   .page-header p {
     font-size: 14px;
-  }
-  .profile-auth-box h3 {
-    font-size: 18px;
-  }
-  .profile-auth-box p,
-  .profile-auth-box li {
-    font-size: 14px;
-  }
-  .profile-login-btn {
-    width: 100%;
-    text-align: center;
-    padding: 10px 16px;
   }
   .toast-item {
     min-width: 160px;

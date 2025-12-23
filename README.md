@@ -1,36 +1,36 @@
-# Crypto Trading Application 🚀
+# Ứng dụng Giao dịch Crypto 🚀
 
-A Node.js + Express cryptocurrency portfolio management & trading simulation web app with MySQL database backend.
+Một ứng dụng web mô phỏng giao dịch và quản lý danh mục tiền điện tử được xây dựng bằng Node.js + Express, sử dụng MySQL làm backend.
 
-## Features ✨
+## Tính năng ✨
 
-- **User Authentication**: Register, login, and secure session management
-- **Market Data**: Real-time crypto prices from CoinGecko API with caching
-- **Trading**: Buy/sell cryptocurrencies with balance tracking
-- **Portfolio**: View holdings, profit/loss calculations using FIFO method
-- **Transaction History**: Complete audit trail of all trades
-- **Responsive Design**: Mobile-optimized UI with 700px breakpoint
-- **Toast Notifications**: User-friendly notifications with FontAwesome icons
-- **Database-Driven**: MySQL for coins, users, wallets, and transactions
+- **Xác thực người dùng**: Đăng ký, đăng nhập và quản lý phiên làm việc an toàn
+- **Dữ liệu thị trường**: Giá tiền điện tử theo thời gian thực từ API CoinGecko với cơ chế cache
+- **Giao dịch**: Mua/bán tiền điện tử với theo dõi số dư
+- **Danh mục (Portfolio)**: Xem tài sản, tính lãi/lỗ theo phương pháp FIFO
+- **Lịch sử giao dịch**: Ghi lại toàn bộ lịch sử giao dịch
+- **Giao diện đáp ứng (Responsive)**: Tối ưu cho thiết bị di động với breakpoint 700px
+- **Thông báo (Toast)**: Thông báo thân thiện người dùng sử dụng icon từ FontAwesome
+- **Dựa trên CSDL**: MySQL lưu coins, users, wallets, transactions
 
-## Tech Stack
+## Ngăn xếp công nghệ
 
 - **Runtime**: Node.js v18+
 - **Framework**: Express 5.x + Express-Handlebars (SSR)
-- **Database**: MySQL via mysql2 connection pool
-- **Styling**: SCSS (compiled to CSS) + Bootstrap 5 CDN
-- **Icons**: FontAwesome 6.7.2 CDN
-- **Authentication**: bcryptjs password hashing + express-session
+- **Cơ sở dữ liệu**: MySQL (mysql2 connection pool)
+- **Giao diện**: SCSS (biên dịch sang CSS) + Bootstrap 5 CDN
+- **Icon**: FontAwesome 6.7.2 CDN
+- **Xác thực**: bcryptjs (băm mật khẩu) + express-session
 
-## Prerequisites
+## Yêu cầu trước khi cài đặt
 
-- **Node.js**: v18 or higher
-- **MySQL**: Running server with database created
-- **npm**: v9 or higher
+- **Node.js**: phiên bản 18 trở lên
+- **MySQL**: Server đang chạy và có thể tạo database
+- **npm**: phiên bản 9 trở lên
 
-## Installation
+## Cài đặt
 
-### 1. Clone & Install Dependencies
+### 1. Clone & cài đặt phụ thuộc
 
 ```bash
 git clone https://github.com/Tien-2201/nodejs_project.git
@@ -38,9 +38,9 @@ cd nodejs_project
 npm install
 ```
 
-### 2. Configure Database
+### 2. Cấu hình CSDL
 
-Create a MySQL database and import the schema:
+Tạo database MySQL và import schema:
 
 ```sql
 CREATE DATABASE DauTuAo;
@@ -93,15 +93,15 @@ INSERT INTO coins (coin_id, symbol, name, is_active, display_order) VALUES
 ('solana', 'SOL', 'Solana', 1, 4);
 ```
 
-### 3. Environment Configuration
+### 3. Cấu hình môi trường
 
-Copy `.env.example` to `.env` and configure:
+Sao chép file `.env.example` rồi cấu hình:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your database credentials:
+Chỉnh các biến môi trường trong `.env` cho phù hợp:
 
 ```dotenv
 DB_HOST=127.0.0.1
@@ -114,162 +114,162 @@ NODE_ENV=development
 SESSION_SECRET=your_secure_random_string_here
 ```
 
-## Running the Application
+## Chạy ứng dụng
 
-### Development Mode (with auto-reload)
+### Chế độ phát triển (auto-reload)
 
 ```bash
 npm start
 ```
 
-Server runs on `http://localhost:3000` by default.
+Server chạy trên `http://localhost:3000` theo mặc định.
 
-### Watch SCSS for changes
+### Watch SCSS (tự biên dịch khi đổi file)
 
-In a separate terminal:
+Mở terminal khác và chạy:
 
 ```bash
 npm run watch
 ```
 
-This compiles SCSS to CSS automatically on file changes.
+SCSS sẽ tự biên dịch sang CSS khi có thay đổi file.
 
-## Project Structure
+## Cấu trúc dự án
 
 ```
 src/
-├── index.js                 # Express app initialization
+├── index.js                 # Khởi tạo ứng dụng Express
 ├── config/
-│   └── db.js               # MySQL connection pool
+│   └── db.js               # Pool kết nối MySQL
 ├── middleware/
-│   └── auth.js             # Authentication middleware
+│   └── auth.js             # Middleware xác thực
 ├── routes/
-│   ├── index.js            # Route aggregator
-│   ├── home.js             # Home page
-│   ├── login.js            # Auth routes
-│   ├── market.js           # Market page + /coins API
-│   ├── portfolio.js        # Portfolio page
-│   ├── trading.js          # Trading page
-│   ├── history.js          # Transaction history
-│   ├── profile.js          # User profile
+│   ├── index.js            # Tập hợp routes
+│   ├── home.js             # Trang chủ
+│   ├── login.js            # Route đăng nhập
+│   ├── market.js           # Trang thị trường + API /coins
+│   ├── portfolio.js        # Trang danh mục
+│   ├── trading.js          # Trang giao dịch
+│   ├── history.js          # Lịch sử giao dịch
+│   ├── profile.js          # Hồ sơ người dùng
 │   └── tradingApi.js       # REST API (/api/trading/*)
 ├── app/
-│   └── controllers/        # Page controllers
+│   └── controllers/        # Controllers xử lý trang
 ├── services/
-│   └── marketService.js    # CoinGecko price fetching + caching
+│   └── marketService.js    # Lấy giá từ CoinGecko + cache
 ├── middleware/
 │   └── auth.js            # ensureAuth middleware
 ├── public/
-│   ├── js/                # Client-side scripts
-│   └── css/               # Compiled CSS from SCSS
+│   ├── js/                # Scripts phía client
+│   └── css/               # CSS biên dịch từ SCSS
 └── resources/
-    ├── scss/              # SCSS source
-    └── views/             # Handlebars templates
+    ├── scss/              # Source SCSS
+    └── views/             # Templates Handlebars
 ```
 
 ## API Endpoints
 
 ### Trading API
 
-- **GET** `/api/trading/price?coin=bitcoin` - Get current price
-- **GET** `/api/trading/ohlc?coin=bitcoin&days=1` - Get OHLC data
-- **POST** `/api/trading/buy` - Execute buy trade
-- **POST** `/api/trading/sell` - Execute sell trade
-- **GET** `/api/trading/portfolio` - Get user holdings
+- **GET** `/api/trading/price?coin=bitcoin` - Lấy giá hiện tại
+- **GET** `/api/trading/ohlc?coin=bitcoin&days=1` - Lấy dữ liệu OHLC
+- **POST** `/api/trading/buy` - Thực hiện lệnh mua
+- **POST** `/api/trading/sell` - Thực hiện lệnh bán
+- **GET** `/api/trading/portfolio` - Lấy danh mục người dùng
 
 ### Market API
 
-- **GET** `/market/data` - Get cached market data (with staleness info)
-- **GET** `/market/coins` - Get list of active coins for trading select
+- **GET** `/market/data` - Lấy dữ liệu thị trường có cache (kèm thông tin cũ/mới)
+- **GET** `/market/coins` - Lấy danh sách coins đang hoạt động
 
-## Features in Detail
+## Chi tiết tính năng
 
-### Authentication
+### Xác thực
 
-- Users register with username/email and password
-- Passwords hashed with bcryptjs before storage
-- Session stored in-memory (production should use redis)
-- Session includes user ID and balance, excludes password hash
+- Người dùng đăng ký bằng username/email và mật khẩu
+- Mật khẩu được băm bằng bcryptjs trước khi lưu
+- Phiên (session) lưu trong bộ nhớ (production nên dùng redis)
+- Phiên chứa user ID và balance; không lưu hash mật khẩu
 
-### Market Data
+### Dữ liệu thị trường
 
-- MarketService fetches prices from CoinGecko every 60 seconds
-- Uses exponential backoff on rate limits (up to 30 minutes)
-- Caches last successful response
-- Returns staleness info to client
+- MarketService lấy giá từ CoinGecko mỗi 60 giây
+- Sử dụng exponential backoff khi bị rate limit (tối đa 30 phút)
+- Cache phản hồi thành công gần nhất
+- Trả thông tin cũ/mới cho client
 
-### Trading
+### Giao dịch
 
-- Buy/sell validation includes:
-  - Sufficient USD balance for buys
-  - Sufficient coin holdings for sells
-  - Valid amount/price (positive numbers)
-- Uses database transactions (BEGIN/COMMIT/ROLLBACK) for atomicity
-- Locks wallet balance with `SELECT...FOR UPDATE` to prevent race conditions
+- Kiểm tra hợp lệ khi mua/bán gồm:
+  - Đủ số dư USD để mua
+  - Đủ số coin để bán
+  - Giá và số lượng là số dương
+- Dùng transaction (BEGIN/COMMIT/ROLLBACK) để đảm bảo nguyên tử
+- Khóa wallet bằng `SELECT...FOR UPDATE` để tránh race condition
 
-### Portfolio
+### Danh mục (Portfolio)
 
-- FIFO method: matches oldest buy with newest sell
-- Calculates average cost, current market value, and P&L
-- Color-coded: green for profit (+), red for loss (-)
-- Displays as percentage and dollar amount
+- Dùng phương pháp FIFO: khớp lệnh mua cũ nhất với lệnh bán
+- Tính giá vốn trung bình, giá thị trường hiện tại, và P&L
+- Mã màu: xanh cho lời (+), đỏ cho lỗ (-)
+- Hiển thị cả phần trăm và số tiền
 
-### Responsive Design
+### Giao diện đáp ứng
 
-- Single breakpoint at 700px (mobile threshold)
-- Mobile tables use CSS `::before` pseudo-elements with `data-label` attributes
-- All components tested and optimized for mobile
+- Breakpoint đơn tại 700px (ngưỡng mobile)
+- Bảng trên mobile dùng `data-label` + `::before` để dễ đọc
+- Các component đã được kiểm thử và tối ưu cho mobile
 
-## Security Notes
+## Ghi chú bảo mật
 
-⚠️ **Development Only**: This app uses in-memory session storage. For production:
-- Use a dedicated session store (redis, memcached)
-- Set `NODE_ENV=production` and use strong `SESSION_SECRET`
-- Enable HTTPS
-- Review helmet CSP settings (currently allows CDN sources)
-- Add rate limiting to API endpoints
-- Validate all user input server-side
+⚠️ **Chỉ dành cho phát triển**: Ứng dụng hiện lưu session trong bộ nhớ. Khi deploy production:
+- Dùng session store chuyên dụng (redis, memcached)
+- Thiết lập `NODE_ENV=production` và dùng `SESSION_SECRET` mạnh
+- Bật HTTPS
+- Rà soát lại CSP của helmet (hiện cho phép CDN)
+- Thêm rate limiting cho API
+- Validate đầu vào phía server
 
-## Troubleshooting
+## Khắc phục sự cố
 
-### Port 3000 in use?
+### Port 3000 đang dùng?
 
 ```bash
-# Change in .env
+# Thay đổi trong .env
 PORT=3001
 ```
 
-### Database connection error?
+### Lỗi kết nối CSDL?
 
-Check `.env` credentials match your MySQL setup:
+Kiểm tra credentials trong `.env` khớp với MySQL của bạn:
 
 ```bash
 mysql -h 127.0.0.1 -u root -p
-# Enter your password, then:
+# Nhập mật khẩu, sau đó:
 # USE DauTuAo;
 # SELECT * FROM coins;
 ```
 
-### SASS compilation error?
+### Lỗi biên dịch SASS?
 
-Ensure SASS is installed:
+Đảm bảo đã cài SASS:
 
 ```bash
 npm install -D sass@latest
 npm run watch
 ```
 
-## Development Tips
+## Mẹo phát triển
 
-- Use `npm start` to run with nodemon and auto-reload
-- Check `src/index.js` for middleware and error handling setup
-- Add new pages: create route file → create controller → add template
-- CSS changes: edit `src/resources/scss/app.scss` → saved SCSS auto-compiles to `src/public/css/app.css`
+- Dùng `npm start` để chạy với nodemon (auto-reload)
+- Xem `src/index.js` để biết middleware và cấu hình xử lý lỗi
+- Thêm trang mới: tạo route → controller → template
+- Thay đổi CSS: chỉnh `src/resources/scss/app.scss` → SCSS sẽ tự biên dịch sang `src/public/css/app.css`
 
-## License
+## Giấy phép
 
-ISC - See LICENSE file for details
+ISC - Xem file LICENSE để biết chi tiết
 
-## Author
+## Tác giả
 
 @Tien-2201

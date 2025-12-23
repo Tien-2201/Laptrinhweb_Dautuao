@@ -96,27 +96,6 @@ app.use((err, req, res, next) => {
   res.status(500).send('Server Error');
 });
 
-const server = app.listen(port, () => {
+app.listen(port, () => {
   console.log(`Server is listening on port ${port}`);
-});
-
-// Graceful shutdown
-function shutdown(signal) {
-  console.log(`Received ${signal}. Shutting down...`);
-  server.close(() => {
-    console.log('HTTP server closed.');
-    process.exit(0);
-  });
-  // Force exit after 10s
-  setTimeout(() => process.exit(1), 10000);
-}
-
-process.on('SIGINT', () => shutdown('SIGINT'));
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('uncaughtException', (err) => {
-  console.error('uncaughtException', err);
-  shutdown('uncaughtException');
-});
-process.on('unhandledRejection', (reason) => {
-  console.error('unhandledRejection', reason);
 });

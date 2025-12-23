@@ -111,6 +111,28 @@ class LoginCTL {
         });
     }
 
+    checkEmail(req, res) {
+        const email = String(req.query.email || '').trim();
+        if (!email) {
+            return res.json({ available: false, message: 'Email trống.' });
+        }
+        const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRe.test(email)) {
+            return res.json({ available: false, message: 'Định dạng email không hợp lệ.' });
+        }
+
+        db.query('SELECT id FROM users WHERE email = ?', [email], (err, results) => {
+            if (err) {
+                console.error('[LoginCTL.checkEmail] Lỗi DB:', err);
+                return res.status(500).json({ available: false, message: 'Lỗi server.' });
+            }
+            if (results && results.length > 0) {
+                return res.json({ available: false, message: 'Email đã được đăng ký.' });
+            }
+            return res.json({ available: true });
+        });
+    }
+
     logout(req, res) {
         req.session.destroy(err => {
             if (err) {

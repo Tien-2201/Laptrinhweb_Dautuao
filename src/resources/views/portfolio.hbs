@@ -9,7 +9,6 @@
             <div class="portfolio-stat-card">
                 <h4>Tổng tài sản</h4>
                 <div class="stat-value">${{totals.totalValue}}</div>
-                <div class="stat-change {{#if totals.isPnlPositive}}text-positive{{else if totals.isPnlNegative}}text-negative{{else}}stat-muted{{/if}}">{{#if totals.pnl}}{{#if totals.isPnlPositive}}+{{/if}}${{totals.pnl}}{{else}}$0.00{{/if}}</div>
             </div>
             <div class="portfolio-stat-card">
                 <h4>Lợi nhuận/Lỗ</h4>
@@ -19,7 +18,6 @@
             <div class="portfolio-stat-card">
                 <h4>Số dư khả dụng</h4>
                 <div class="stat-value">${{balanceUsd}}</div>
-                <div class="stat-change stat-muted">100% tổng tài sản</div>
             </div>
         </div>
 

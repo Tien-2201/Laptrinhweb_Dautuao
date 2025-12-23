@@ -1,7 +1,6 @@
 <div class="history-page">
   <div class="container">
     
-    <!-- HEADER -->
     <div class="page-header">
       <h2>Lịch sử giao dịch</h2>
       <p>Xem lại các giao dịch đã thực hiện</p>
@@ -19,10 +18,10 @@
         <div class="holdings-list">
           {{#if holdings}}
             {{#each holdings}}
-              <div class="holding-item">
-                <span class="holding-symbol">{{symbol}}</span>
-                <span class="holding-amount">{{amount}}</span>
-                <small class="holding-price">Giá TB: ${{avg_price}}</small>
+              <div class="asset-item">
+                <span class="asset-symbol">{{symbol}}</span>
+                <span class="asset-amount">{{amount}}</span>
+                <small class="asset-price">Giá TB: ${{avg_price}}</small>
               </div>
             {{/each}}
           {{else}}
